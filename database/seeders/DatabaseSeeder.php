@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             InstitusiSeed::class,
             RoleSeed::class,
+            MenuSeed::class,
+            UserSeeder::class
         ]);
     }
 }
