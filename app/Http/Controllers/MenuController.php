@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\MenuModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class MenuController extends Controller
 {
@@ -15,25 +17,44 @@ class MenuController extends Controller
         return view('menu.index', compact('title', 'menus'));
     }
 
-    public function store(Request $request)
+    public function update(Request $request)
     {
-        $ids = $request->ids;
-        $labels = $request->label;
-        $urls = $request->url;
-        $icons = $request->icon;
+        $ids     = $request->ids;
+        $labels  = $request->label;
+        $urls    = $request->url;
+        $icons   = $request->icon;
         $parents = $request->parent;
 
-        foreach ($ids as $index => $id) {
-            MenuModel::where('id', $id)
-                ->update([
+        try {
+            DB::beginTransaction();
+
+            // Hapus menu yang tidak ada (hanya id positif yang valid)
+            MenuModel::whereIn('id', MenuModel::pluck('id'))
+                ->whereNotIn('id', array_filter($ids, fn($id) => is_numeric($id) && $id > 0))
+                ->delete();
+
+            foreach ($ids as $index => $id) {
+                $data = [
                     'label'     => $labels[$id] ?? '',
                     'url'       => $urls[$id] ?? '',
                     'icon'      => $icons[$id] ?? '',
-                    'parent_id' => $parents[$id] ?? null,
+                    'parent_id' => $parents[$id] > 0 ? $parents[$id] : null,
                     'order'     => $index + 1
-                ]);
-        }
+                ];
 
-        return back()->with('success', 'Berhasil update menu!');
+                if (is_numeric($id) && $id > 0) {
+                    MenuModel::where('id', $id)->update($data);
+                } else {
+                    MenuModel::create($data); // baru, akan pakai autoincrement
+                }
+            }
+
+            DB::commit();
+            return back()->with('success', 'Berhasil update menu!');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            Log::error('Gagal update menu: ' . $th->getMessage());
+            return back()->with('error', 'Gagal menyimpan menu!');
+        }
     }
 }

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UsersController;
 
 // Auth
@@ -23,9 +24,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/user/destroy/{id}', [UsersController::class, 'destroy'])->name('user.destroy');
     Route::get('/user/detail/{id}', [UsersController::class, 'detail'])->name('user.detail');
 
+    // Role
+    Route::get('/role', [RoleController::class, 'index'])->name('role.index');
+    Route::post('/role', [RoleController::class, 'store'])->name('role.store');
+    Route::put('/role/{id}', [RoleController::class, 'update'])->name('role.update');
+    Route::delete('/role/{id}', [RoleController::class, 'destroy'])->name('role.destroy');
+
     // Menu
     Route::get('/menu', [MenuController::class, 'index'])->name('menu');
-    Route::post('/menu/store', [MenuController::class, 'store'])->name('menu.store');
-    Route::put('/menu/update/{id}', [MenuController::class, 'update'])->name('menu.update');
-    Route::delete('/menu/destroy/{id}', [MenuController::class, 'destroy'])->name('menu.destroy');
+    Route::post('/menu/update', [MenuController::class, 'update'])->name('menu.update');
 });
