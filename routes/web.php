@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AccessController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MenuController;
@@ -33,4 +34,10 @@ Route::middleware('auth')->group(function () {
     // Menu
     Route::get('/menu', [MenuController::class, 'index'])->name('menu');
     Route::post('/menu/update', [MenuController::class, 'update'])->name('menu.update');
+
+    // Akses Role
+    Route::get('/access/role', [AccessController::class, 'accessRoleIndex'])->name('access.role.index');
+    Route::get('/access/role/{id_role}', [AccessController::class, 'accessRole'])->name('access.role');
+    // Route::post('/access/role', [AccessController::class, 'giveAccessRole'])->name('give.access.role');
+    // Route::post('/access/role/{id}', [AccessController::class, 'dropAccessRole'])->name('drop.access.role');
 });
