@@ -50,6 +50,6 @@ class User extends Authenticatable
 
     public function userRole()
     {
-        return $this->hasOne(UserRoleModel::class, 'user_id');
+        return $this->hasMany(UserRoleModel::class, 'user_id');
     }
 }

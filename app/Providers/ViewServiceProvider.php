@@ -26,9 +26,9 @@ class ViewServiceProvider extends ServiceProvider
             $user = Auth::user();
             $menus = [];
 
-            if ($user && $user->userRole) {
-                $roleId = $user->userRole->role_id;
-                $menus = MenuModel::getStructuredByRole($roleId);
+            if ($user && $user->userRole->count()) {
+                $roleIds = $user->userRole->pluck('role_id');
+                $menus = MenuModel::getStructuredByRoles($roleIds);
             }
 
             $view->with('menus', $menus);

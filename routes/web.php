@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\UsersController;
 
 // Auth
@@ -14,7 +15,7 @@ Route::middleware('guest')->group(function () {
     Route::post('/authenticate', [AuthController::class, 'authenticate'])->name('authenticate');
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'role.route'])->group(function () {
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -35,9 +36,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/menu', [MenuController::class, 'index'])->name('menu');
     Route::post('/menu/update', [MenuController::class, 'update'])->name('menu.update');
 
+    // User Role
+    Route::get('/user/role', [UserRoleController::class, 'userRoleIndex'])->name('user.role.index');
+    Route::get('/user/role/{id_user}', [UserRoleController::class, 'userRole'])->name('user.role');
+
     // Akses Role
     Route::get('/access/role', [AccessController::class, 'accessRoleIndex'])->name('access.role.index');
     Route::get('/access/role/{id_role}', [AccessController::class, 'accessRole'])->name('access.role');
-    // Route::post('/access/role', [AccessController::class, 'giveAccessRole'])->name('give.access.role');
-    // Route::post('/access/role/{id}', [AccessController::class, 'dropAccessRole'])->name('drop.access.role');
+
 });

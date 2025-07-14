@@ -26,6 +26,7 @@ class MenuModel extends Model
         return self::whereNull('parent_id')->with('children')->orderBy('order')->get();
     }
 
+    // Single role
     public static function getStructuredByRole($roleId)
     {
         return self::whereNull('parent_id')
@@ -40,5 +41,36 @@ class MenuModel extends Model
             }])
             ->orderBy('order')
             ->get();
+    }
+
+    // Multi role
+    public static function getStructuredByRoles($roleIds)
+    {
+        return self::whereNull('parent_id')
+            ->where('active', true)
+            ->whereIn('id', function ($query) use ($roleIds) {
+                $query->select('menu_id')
+                    ->from('access_role')
+                    ->whereIn('role_id', $roleIds);
+            })
+            ->with(['children' => function ($q) use ($roleIds) {
+                $q->whereIn('id', function ($query) use ($roleIds) {
+                    $query->select('menu_id')
+                        ->from('access_role')
+                        ->whereIn('role_id', $roleIds);
+                });
+            }])
+            ->orderBy('order')
+            ->get();
+    }
+
+    // 
+    public static function getRouteNamesByRoles($roleIds)
+    {
+        return static::query()
+            ->whereHas('roles', fn($q) => $q->whereIn('roles.id', $roleIds))
+            ->pluck('route_name')   // Pastikan kolom route_name ada
+            ->unique()
+            ->values();
     }
 }

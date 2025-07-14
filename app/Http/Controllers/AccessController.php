@@ -54,6 +54,6 @@ class AccessController extends Controller
         return response()->json([
             "message" => "Berhasil {$request->action} akses role!",
             "payload" => $access ?? null
-        ]);
+        ], 201);
     }
 }
