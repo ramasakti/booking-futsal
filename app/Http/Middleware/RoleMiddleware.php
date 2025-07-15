@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 use App\Models\MenuModel;
 
 class RoleMiddleware
@@ -40,7 +41,8 @@ class RoleMiddleware
 
         // Cocokkan dengan route yg sedang dipanggil
         $current = $request->route()->uri;
-        if ($routeNames->contains($current)) {
+        $allowed = $routeNames->contains(fn($uri) => Str::startsWith($current, $uri));
+        if ($allowed) {
             return $next($request);
         }
 
