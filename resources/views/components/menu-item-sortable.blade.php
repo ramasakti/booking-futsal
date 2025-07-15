@@ -22,6 +22,11 @@
         <input type="text" name="url[{{ $item->id }}]" value="{{ $item->url }}" class="form-control me-2"
             placeholder="URL">
 
+        <label class="form-check form-switch mt-2">
+            <input class="form-check-input" type="checkbox" name="active[{{ $item->id }}]" value="1"
+                @checked($item->active) />
+        </label>
+
         <input type="hidden" name="icon[{{ $item->id }}]" value="{{ $item->icon }}"
             id="icon-{{ $item->id }}">
         <button type="button" class="btn btn-icon btn-select-icon" data-bs-toggle="modal" data-bs-target="#icon-picker"

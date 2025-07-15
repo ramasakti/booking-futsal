@@ -24,6 +24,7 @@ class MenuController extends Controller
         $urls    = $request->url;
         $icons   = $request->icon;
         $parents = $request->parent;
+        $actives = $request->active;
 
         try {
             DB::beginTransaction();
@@ -39,7 +40,8 @@ class MenuController extends Controller
                     'url'       => $urls[$id] ?? '',
                     'icon'      => $icons[$id] ?? '',
                     'parent_id' => $parents[$id] > 0 ? $parents[$id] : null,
-                    'order'     => $index + 1
+                    'order'     => $index + 1,
+                    'active'    => isset($actives[$id]) ? 1 : 0
                 ];
 
                 if (is_numeric($id) && $id > 0) {

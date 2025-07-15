@@ -106,7 +106,7 @@
                                     $path = request()->server('PATH_INFO');
                                     $breadcrumbs = explode('/', $path);
                                 @endphp
-                                <ol class="breadcrumb" aria-label="breadcrumbs">
+                                <ol class="breadcrumb breadcrumb-arrows" aria-label="breadcrumbs">
                                     @foreach ($breadcrumbs as $bread)
                                         <li class="breadcrumb-item">
                                             <a href="#">{{ $bread }}</a>
