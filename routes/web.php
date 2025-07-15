@@ -15,7 +15,8 @@ Route::middleware('guest')->group(function () {
     Route::post('/authenticate', [AuthController::class, 'authenticate'])->name('authenticate');
 });
 
-Route::middleware(['auth', 'role.route'])->group(function () {
+// Middleware 'role' untuk authorization route berdasarkan role
+Route::middleware(['auth', 'role'])->group(function () {
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
