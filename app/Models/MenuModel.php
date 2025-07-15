@@ -64,12 +64,23 @@ class MenuModel extends Model
             ->get();
     }
 
-    // 
+    // Relasi many‑to‑many ke roles
+    public function roles()
+    {
+        return $this->belongsToMany(
+            RoleModel::class,   // model tujuan
+            'access_role',      // nama pivot
+            'menu_id',          // FK di pivot ke menu
+            'role_id'           // FK di pivot ke role
+        );
+    }
+
+    // Mendapatkan url route berdasarkan role
     public static function getRouteNamesByRoles($roleIds)
     {
         return static::query()
-            ->whereHas('roles', fn($q) => $q->whereIn('roles.id', $roleIds))
-            ->pluck('route_name')   // Pastikan kolom route_name ada
+            ->whereHas('roles', fn($q) => $q->whereIn('role.id', $roleIds))
+            ->pluck('url')
             ->unique()
             ->values();
     }

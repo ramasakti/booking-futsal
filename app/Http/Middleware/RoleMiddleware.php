@@ -20,12 +20,12 @@ class RoleMiddleware
     {
         $user = Auth::user();
 
-        // ➊ Tidak login → redirect / abort
+        // Tidak login → redirect / abort
         if (! $user) {
             return redirect()->route('login');
         }
 
-        // ➌ Ambil daftar route yg diizinkan utk user ini
+        // Ambil daftar route yg diizinkan utk user ini
         $routeNames = Cache::remember(
             "allowed_routes_user_{$user->id}",
             now()->addMinutes(30),
@@ -35,13 +35,16 @@ class RoleMiddleware
             }
         );
 
-        // ➍ Cocokkan dengan route yg sedang dipanggil
-        $current = $request->route()->getName();      // pastikan setiap route punya name()
+        // Filter jika mengandung '/' pada awal string, maka dihapus
+        $routeNames->transform(fn($item) => ltrim($item, '/'));
+
+        // Cocokkan dengan route yg sedang dipanggil
+        $current = $request->route()->uri;
         if ($routeNames->contains($current)) {
             return $next($request);
         }
 
-        // ➎ Tolak jika tidak di daftar
+        // Tolak jika tidak di daftar
         abort(403, 'You are not authorized to access this route.');
     }
 }
