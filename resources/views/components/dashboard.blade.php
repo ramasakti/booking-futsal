@@ -101,7 +101,19 @@
                     <div class="row g-2 align-items-center">
                         <div class="col">
                             <!-- Page pre-title -->
-                            <div class="page-pretitle">Overview</div>
+                            <div class="page-pretitle">
+                                @php
+                                    $path = request()->server('PATH_INFO');
+                                    $breadcrumbs = explode('/', $path);
+                                @endphp
+                                <ol class="breadcrumb" aria-label="breadcrumbs">
+                                    @foreach ($breadcrumbs as $bread)
+                                        <li class="breadcrumb-item">
+                                            <a href="#">{{ $bread }}</a>
+                                        </li>
+                                    @endforeach
+                                </ol>
+                            </div>
                             <h2 class="page-title">{{ $title }}</h2>
                         </div>
                     </div>
