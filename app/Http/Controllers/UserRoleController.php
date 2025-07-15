@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\RoleModel;
 use App\Models\UserRoleModel;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -15,6 +16,19 @@ class UserRoleController extends Controller
         return view("user_role.index", [
             "title" => "Akses Role",
             "users" => $users
+        ]);
+    }
+
+    public function userRole($id_user)
+    {
+        $user = User::find($id_user);
+        $roles = RoleModel::all();
+        $userRoles = UserRoleModel::with("role")->where("user_id", $id_user)->pluck('role_id');
+
+        return view("user_role.user", [
+            "title" => "Role User {$user->username}",
+            "roles" => $roles,
+            "userRoles" => $userRoles
         ]);
     }
 
