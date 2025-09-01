@@ -6,23 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>{{ $title }}</title>
-    <!-- BEGIN PAGE LEVEL STYLES -->
-    <link href="./libs/jsvectormap/dist/jsvectormap.css?1744816593" rel="stylesheet" />
-    <!-- END PAGE LEVEL STYLES -->
     <!-- BEGIN GLOBAL MANDATORY STYLES -->
-    <link href="/tabler-1.2.0/dashboard/dist/css/tabler.css?1744816593" rel="stylesheet" />
+    <link href="/tabler-1.2.0/dashboard/dist/css/tabler.css" rel="stylesheet" />
     <!-- END GLOBAL MANDATORY STYLES -->
     <!-- BEGIN PLUGINS STYLES -->
-    <link href="/tabler-1.2.0/dashboard/dist/css/tabler-flags.css?1744816593" rel="stylesheet" />
-    <link href="/tabler-1.2.0/dashboard/dist/css/tabler-socials.css?1744816593" rel="stylesheet" />
-    <link href="/tabler-1.2.0/dashboard/dist/css/tabler-payments.css?1744816593" rel="stylesheet" />
-    <link href="/tabler-1.2.0/dashboard/dist/css/tabler-vendors.css?1744816593" rel="stylesheet" />
-    <link href="/tabler-1.2.0/dashboard/dist/css/tabler-marketing.css?1744816593" rel="stylesheet" />
-    <link href="/tabler-1.2.0/dashboard/dist/css/tabler-themes.css?1744816593" rel="stylesheet" />
+    <link href="/tabler-1.2.0/dashboard/dist/css/tabler-flags.css" rel="stylesheet" />
+    <link href="/tabler-1.2.0/dashboard/dist/css/tabler-socials.css" rel="stylesheet" />
+    <link href="/tabler-1.2.0/dashboard/dist/css/tabler-payments.css" rel="stylesheet" />
+    <link href="/tabler-1.2.0/dashboard/dist/css/tabler-vendors.css" rel="stylesheet" />
+    <link href="/tabler-1.2.0/dashboard/dist/css/tabler-marketing.css" rel="stylesheet" />
+    <link href="/tabler-1.2.0/dashboard/dist/css/tabler-themes.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel="stylesheet" type="text/css" href="/datatables/datatables.min.css">
+    <link href="/tabler-1.2.0/dashboard/libs/tom-select/dist/css/tom-select.css" rel="stylesheet">
     <!-- END PLUGINS STYLES -->
-    <!-- BEGIN DEMO STYLES -->
-    <link href="./preview/css/demo.css?1744816593" rel="stylesheet" />
-    <!-- END DEMO STYLES -->
     <!-- BEGIN CUSTOM FONT -->
     <style>
         @import url("https://rsms.me/inter/inter.css");
@@ -32,7 +29,7 @@
 
 <body>
     <!-- BEGIN GLOBAL THEME SCRIPT -->
-    <script src="/tabler-1.2.0/dashboard/dist/js/tabler-theme.min.js?1744816593"></script>
+    <script src="/tabler-1.2.0/dashboard/dist/js/tabler-theme.min.js"></script>
     <!-- END GLOBAL THEME SCRIPT -->
     <div class="page">
         <!--  BEGIN SIDEBAR  -->
@@ -48,6 +45,45 @@
                 <div class="navbar-brand navbar-brand-autodark">
                     <img src="/images/logo.png" style="max-height: 100px;">
                 </div>
+                <div class="nav-item dropdown">
+                    <div class="nav-item d-flex align-items-center">
+                        <div class="d-flex align-items-center ms-2">
+                            <span class="avatar">
+                                @php
+                                    $nama = explode(' ', Auth::user()->name);
+                                    $inisial = '';
+                                    foreach ($nama as $nama) {
+                                        if (!empty($nama)) {
+                                            $inisial .= strtoupper($nama[0]);
+                                        }
+                                    }
+                                @endphp
+                                {{ $inisial }}
+                            </span>
+                            <div class="d-none d-xl-block ps-2">
+                                <div>{{ Auth::user()->name }}</div>
+                                <div class="mt-1 small text-secondary">
+                                    {{ session('roles')->pluck('role')->pluck('role')->implode(', ') }}
+                                </div>
+                            </div>
+                        </div>
+                        <a href="{{ route('logout') }}" class="ms-2 d-flex align-items-right text-danger ms-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round"
+                                class="icon icon-tabler icons-tabler-outline icon-tabler-logout">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path
+                                    d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
+                                <path d="M9 12h12l-3 -3" />
+                                <path d="M18 15l3 -3" />
+                            </svg>
+                        </a>
+                    </div>
+                    {{-- <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow show" data-bs-popper="static">
+                        <a href="/logout" class="dropdown-item">Logout</a>
+                    </div> --}}
+                </div>
                 <!-- END NAVBAR LOGO -->
 
                 <div class="collapse navbar-collapse" id="sidebar-menu">
@@ -61,25 +97,35 @@
                                     );
                                 @endphp
                                 <li class="nav-item dropdown {{ $isParentActive ? 'active' : '' }}">
-                                    <a class="nav-link dropdown-toggle {{ $isParentActive ? 'active' : '' }}"
-                                        href="#menu-{{ $menu->id }}" data-bs-toggle="dropdown" role="button">
+                                    <a class="nav-link dropdown-toggle {{ request()->is(ltrim(replaceSessionPlaceholders($menu->url), '/')) ? 'active' : '' }}"
+                                        href="{{ replaceSessionPlaceholders($menu->url) }}" data-bs-toggle="dropdown"
+                                        role="button">
                                         <span class="nav-link-icon d-md-none d-lg-inline-block">
                                             {!! $menu->icon !!}
                                         </span>
-                                        <span class="nav-link-title">{{ $menu->label }}</span>
+                                        <span class="nav-link-title">
+                                            {{ replaceSessionPlaceholders($menu->label) }}
+                                        </span>
                                     </a>
                                     <div class="dropdown-menu">
                                         @foreach ($menu->children as $child)
                                             <a class="dropdown-item {{ request()->is(ltrim($child->url, '/')) ? 'active' : '' }}"
                                                 href="{{ $child->url }}">
-                                                {!! $child->icon !!} {{ $child->label }}
+                                                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                                    {!! $child->icon !!}
+                                                </span>
+                                                <span class="nav-link-title">
+                                                    {{ replaceSessionPlaceholders($child->label) }}
+                                                </span>
                                             </a>
                                         @endforeach
                                     </div>
                                 </li>
                             @else
-                                <li class="nav-item {{ request()->is(ltrim($menu->url, '/')) ? 'active' : '' }}">
-                                    <a class="nav-link" href="{{ $menu->url }}">
+                                <li
+                                    class="nav-item {{ request()->is(ltrim(replaceSessionPlaceholders($menu->url), '/')) ? 'active' : '' }}">
+                                    <a class="nav-link {{ request()->is(ltrim(replaceSessionPlaceholders($menu->url), '/')) ? 'active' : '' }}"
+                                        href="{{ replaceSessionPlaceholders($menu->url) }}">
                                         <span class="nav-link-icon d-md-none d-lg-inline-block">
                                             {!! $menu->icon !!}
                                         </span>
@@ -130,19 +176,54 @@
         </div>
     </div>
     <!-- BEGIN PAGE LIBRARIES -->
-    <script src="./libs/apexcharts/dist/apexcharts.min.js?1744816593" defer></script>
-    <script src="./libs/jsvectormap/dist/jsvectormap.min.js?1744816593" defer></script>
-    <script src="./libs/jsvectormap/dist/maps/world.js?1744816593" defer></script>
-    <script src="./libs/jsvectormap/dist/maps/world-merc.js?1744816593" defer></script>
+    <script src="/tabler-1.2.0/dashboard/libs/apexcharts/dist/apexcharts.min.js" defer></script>
+    <script src="/tabler-1.2.0/dashboard/libs/jsvectormap/dist/jsvectormap.min.js" defer></script>
+    <script src="/tabler-1.2.0/dashboard/libs/jsvectormap/dist/maps/world.js" defer></script>
+    <script src="/tabler-1.2.0/dashboard/libs/jsvectormap/dist/maps/world-merc.js" defer></script>
     <!-- END PAGE LIBRARIES -->
     <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
-    <script src="/tabler-1.2.0/dashboard/dist/js/tabler.min.js?1744816593" defer></script>
+    <script src="/tabler-1.2.0/dashboard/dist/js/tabler.min.js" defer></script>
     <!-- END GLOBAL MANDATORY SCRIPTS -->
-    <!-- BEGIN DEMO SCRIPTS -->
-    <script src="./preview/js/demo.min.js?1744816593" defer></script>
-    <!-- END DEMO SCRIPTS -->
+    {{-- Vendor --}}
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
+        integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="/datatables/datatables.min.js"></script>
+    <script src="/tabler-1.2.0/dashboard/libs/tom-select/dist/js/tom-select.complete.min.js"></script>
+    {{-- End Vendor --}}
     <!-- BEGIN PAGE SCRIPTS -->
-
+    <script>
+        @if ($message = Session::get('success'))
+            Toastify({
+                text: "{!! $message !!}",
+                duration: 3000,
+                position: "center",
+                style: {
+                    background: "#0ca678"
+                }
+            }).showToast();
+        @elseif (count($errors) > 0)
+            @foreach ($errors->all() as $error)
+                Toastify({
+                    text: "{!! $error !!}",
+                    duration: 3000,
+                    position: "center",
+                    style: {
+                        background: "#d63939"
+                    }
+                }).showToast();
+            @endforeach
+        @elseif ($message = Session::get('failed'))
+            Toastify({
+                text: "{!! $message !!}",
+                duration: 3000,
+                position: "center",
+                style: {
+                    background: "#d63939"
+                }
+            }).showToast();
+        @endif
+    </script>
     <!-- END PAGE SCRIPTS -->
 </body>
 

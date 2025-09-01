@@ -1,4 +1,5 @@
 <x-dashboard title="{{ $title }}">
+    @include('components.back')
     @include('access.menu-list', [
         'menus' => $menus,
         'checkedMenuIds' => $checkedMenuIds,

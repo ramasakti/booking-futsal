@@ -23,13 +23,14 @@
                         <div class="col">
                             <a href="#" class="btn w-100" data-bs-dismiss="modal"> Cancel </a>
                         </div>
-                        <form action="{{ route('role.destroy', $role->id) }}" method="post">
-                            @method("DELETE")
-                            @csrf
-                            <div class="col">
-                                <button type="submit" class="btn btn-danger w-100" data-bs-dismiss="modal"> Delete </button>
-                            </div>
-                        </form>
+                        <div class="col">
+                            <form action="{{ route('role.destroy', $role->id) }}" method="post">
+                                @method('DELETE')
+                                @csrf
+                                <button type="submit" class="btn btn-danger w-100" data-bs-dismiss="modal"> Delete
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

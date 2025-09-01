@@ -28,7 +28,7 @@
     <!-- BEGIN GLOBAL THEME SCRIPT -->
     <script src="/tabler-1.2.0/dashboard/dist/js/tabler-theme.min.js"></script>
     <!-- END GLOBAL THEME SCRIPT -->
-    <div class="page page-center">
+    <div class="page">
         <div class="container container-tight py-4">
             <div class="text-center mb-4">
                 <img src="/images/logo.png" style="max-height: 100px;">

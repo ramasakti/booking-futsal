@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\InstitusiModel;
 use Illuminate\Http\Request;
 use App\Models\RoleModel;
 use App\Models\User;
+use App\Models\UserInstitusiModel;
 use App\Models\UserRoleModel;
 use Illuminate\Support\Facades\DB;
 
@@ -12,9 +14,13 @@ class UsersController extends Controller
 {
     public function index()
     {
-        $users = User::all();
+        $title = "Users";
+        $users = User::with(['userRole.role', 'userInstitusi.institusi'])->get();
         $roles = RoleModel::all();
-        return view('user.index', compact('users', 'roles'));
+        $institusies = InstitusiModel::all();
+
+        dd($users[0]->userRole);
+        return view('user.index', compact('title', 'users', 'roles', 'institusies'));
     }
 
     public function store(Request $request)
@@ -23,51 +29,75 @@ class UsersController extends Controller
             'name' => 'required',
             'email' => 'required|unique:users,email',
             'username' => 'required|unique:users,username',
-            'password' => 'required',
-            'role_id' => 'required'
+            'role_id' => 'required',
+            'institusi_id' => 'required'
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'username' => $request->username,
-            'password' => bcrypt($request->password),
-        ]);
+        try {
+            DB::transaction(function () use ($request) {
+                // Membuat user baru
+                $user = User::create([
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'username' => $request->username,
+                    'password' => bcrypt($request->password),
+                ]);
 
-        UserRoleModel::create([
-            'user_id' => $user,
-            'role_id' => $request->role_id
-        ]);
+                // Menghubungkan user dengan role
+                UserRoleModel::create([
+                    'user_id' => $user->id,
+                    'role_id' => $request->role_id
+                ]);
 
-        return back()->with('success', 'Berhasil membuat user!');
+                // Menghubungkan user dengan institusi
+                UserInstitusiModel::create([
+                    'user_id' => $user->id,
+                    'institusi_id' => $request->institusi_id
+                ]);
+            });
+
+            return back()->with('success', 'Berhasil membuat user!');
+        } catch (\Throwable $th) {
+            return back()->with('error', 'Gagal membuat user. ' . $th->getMessage());
+        }
     }
 
     public function update($id, Request $request)
     {
+        $user = User::find($id);
+        if (!$user) {
+            return back()->with('error', 'User tidak ditemukan.');
+        }
+
         $request->validate([
             'name' => 'required',
-            'email' => 'required|unique:users,email',
-            'username' => 'required|unique:users,username',
-            'role_id' => 'required'
+            'email' => 'required|unique:users,email,' . $id,
+            'username' => 'required|unique:users,username,' . $id,
+            'role_id' => 'required',
+            'institusi_id' => 'required'
         ]);
 
-        // Update user
-        $user = User::find($id);
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->username = $request->username;
-        $user->save();
+        try {
+            DB::transaction(function () use ($user, $request) {
+                // Update user
+                $user->name = $request->name;
+                $user->email = $request->email;
+                $user->username = $request->username;
+                $user->save();
 
-        // Hapus semua role
-        UserRoleModel::where('user_id', $id)->delete();
+                // Hapus dan masukkan kembali role
+                $user->roles()->delete();
+                $user->roles()->create(['role_id' => $request->role_id]);
 
-        // Masukkan ulang role
-        UserRoleModel::create([
-            'user_id' => $id,
-            'role_id' => $request->role_id
-        ]);
+                // Hapus dan masukkan kembali institusi
+                $user->institusi()->delete();
+                $user->institusi()->create(['institusi_id' => $request->institusi_id]);
+            });
 
-        return back()->with('success', 'Berhasil update user!');
+            return back()->with('success', 'Berhasil update user!');
+        } catch (\Throwable $th) {
+            return back()->with('error', 'Gagal mengupdate user: ' . $th->getMessage());
+        }
     }
 
     public function destroy($id)

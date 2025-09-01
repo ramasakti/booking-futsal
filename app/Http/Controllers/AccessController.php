@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\AccessRole;
 use App\Models\MenuModel;
 use App\Models\RoleModel;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class AccessController extends Controller
 {
@@ -21,16 +23,18 @@ class AccessController extends Controller
 
     public function accessRole($id_role)
     {
+        $role = RoleModel::find($id_role);
+
         // semua menu yang ada di sistem
         $menus = MenuModel::with('children')->whereNull('parent_id')->orderBy('order')->get();
 
         // id-id menu yang sudah dimiliki role (akan kita pakai untuk 'checked')
         $checkedMenuIds = AccessRole::where('role_id', $id_role)->pluck('menu_id')->toArray();
 
-        return view('access.role', [
-            'title' => 'Akses Role',
-            'menus' => $menus,
-            'checkedMenuIds' => $checkedMenuIds,
+        return view("access.role", [
+            "title" => "Akses Role {$role->role}",
+            "menus" => $menus,
+            "checkedMenuIds" => $checkedMenuIds,
         ]);
     }
 
@@ -49,6 +53,12 @@ class AccessController extends Controller
             ]);
         } else {
             AccessRole::where("role_id", $request->role_id)->where("menu_id", $request->menu_id)->delete();
+        }
+
+        $users = User::all();
+
+        foreach ($users as $user) {
+            Cache::forget("allowed_routes_user_{$user->id}");
         }
 
         return response()->json([

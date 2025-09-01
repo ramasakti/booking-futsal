@@ -1,6 +1,6 @@
 <x-dashboard title="{{ $title }}">
     <div class="table-responsive">
-        <table class="table table-vcenter table-nowrap">
+        <table class="table table-vcenter table-nowrap" id="table-akses_role">
             <thead>
                 <tr>
                     <th>#</th>
@@ -32,4 +32,10 @@
             </tbody>
         </table>
     </div>
+
+    <script>
+        window.addEventListener("DOMContentLoaded", () => {
+            new DataTable('#table-akses_role');
+        })
+    </script>
 </x-dashboard>

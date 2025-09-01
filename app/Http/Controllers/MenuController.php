@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\MenuModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 
 class MenuController extends Controller
 {
@@ -50,6 +52,8 @@ class MenuController extends Controller
                     MenuModel::create($data); // baru, akan pakai autoincrement
                 }
             }
+
+            Cache::flush();
 
             DB::commit();
             return back()->with('success', 'Berhasil update menu!');

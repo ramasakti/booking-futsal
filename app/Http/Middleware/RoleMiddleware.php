@@ -32,7 +32,8 @@ class RoleMiddleware
             now()->addMinutes(30),
             function () use ($user) {
                 $roleIds = $user->userRole->pluck('role_id');
-                return MenuModel::getRouteNamesByRoles($roleIds);
+                return MenuModel::getRouteNamesByRoles($roleIds)
+                    ->map(fn($route) => replaceSessionPlaceholders($route));
             }
         );
 

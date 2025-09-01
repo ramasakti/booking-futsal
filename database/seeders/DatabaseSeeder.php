@@ -19,7 +19,10 @@ class DatabaseSeeder extends Seeder
             InstitusiSeed::class,
             RoleSeed::class,
             MenuSeed::class,
-            UserSeeder::class
+            UserSeeder::class,
+            UserRoleSeed::class,
+            AksesRoleSeed::class,
+            AspekSeeder::class,
         ]);
     }
 }

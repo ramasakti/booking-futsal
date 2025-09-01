@@ -46,7 +46,7 @@ class MenuModel extends Model
     // Multi role
     public static function getStructuredByRoles($roleIds)
     {
-        return self::whereNull('parent_id')
+        $menus = self::whereNull('parent_id')
             ->where('active', true)
             ->whereIn('id', function ($query) use ($roleIds) {
                 $query->select('menu_id')
@@ -62,6 +62,19 @@ class MenuModel extends Model
             }])
             ->orderBy('order')
             ->get();
+
+        // Replace placeholders
+        $menus->each(function ($menu) {
+            $menu->url = replaceSessionPlaceholders($menu->url);
+            $menu->label = replaceSessionPlaceholders($menu->label);
+
+            $menu->children->each(function ($child) {
+                $child->url = replaceSessionPlaceholders($child->url);
+                $child->label = replaceSessionPlaceholders($child->label);
+            });
+        });
+
+        return $menus;
     }
 
     // Relasi many‑to‑many ke roles

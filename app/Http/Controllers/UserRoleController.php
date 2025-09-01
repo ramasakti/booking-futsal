@@ -14,7 +14,7 @@ class UserRoleController extends Controller
         $users = User::with(["userRole.role"])->get();
 
         return view("user_role.index", [
-            "title" => "Akses Role",
+            "title" => "User Role",
             "users" => $users
         ]);
     }

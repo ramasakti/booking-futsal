@@ -52,4 +52,16 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserRoleModel::class, 'user_id');
     }
+
+    public function getRoleNamesAttribute()
+    {
+        return $this->userRole->map(function ($userRole) {
+            return $userRole->role->role ?? null;
+        })->filter()->values();
+    }
+
+    public function userInstitusi()
+    {
+        return $this->hasMany(UserInstitusiModel::class, 'user_id');
+    }
 }

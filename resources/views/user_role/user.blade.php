@@ -1,4 +1,5 @@
 <x-dashboard title="{{ $title }}">
+    @include('components.back')
     <div class="table-responsive">
         <table class="table table-vcenter table-nowrap">
             <thead>

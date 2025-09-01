@@ -15,6 +15,7 @@ class InstitusiSeed extends Seeder
     {
         $data = [
             ['institusi' => 'PI'],
+            ['institusi' => 'PS'],
             ['institusi' => 'TPA'],
             ['institusi' => 'PG'],
             ['institusi' => 'TK'],

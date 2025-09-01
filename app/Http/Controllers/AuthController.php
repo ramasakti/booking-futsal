@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use App\Models\KelasModel;
 
 class AuthController extends Controller
 {
@@ -15,6 +17,10 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
+            $user = User::with(['userRole.role', 'userInstitusi.institusi'])->where('id', Auth::user()->id)->first();
+            $request->session()->put('roles', $user->userRole);
+            $request->session()->put('institusies', $user->userInstitusi);
+
             $request->session()->regenerate();
             return redirect()->intended('dashboard');
         }
@@ -25,5 +31,15 @@ class AuthController extends Controller
     public function login()
     {
         return view('welcome');
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/');
     }
 }
