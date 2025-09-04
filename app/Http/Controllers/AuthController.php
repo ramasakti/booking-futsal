@@ -17,9 +17,8 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-            $user = User::with(['userRole.role', 'userInstitusi.institusi'])->where('id', Auth::user()->id)->first();
+            $user = User::with('userRole.role')->where('id', Auth::user()->id)->first();
             $request->session()->put('roles', $user->userRole);
-            $request->session()->put('institusies', $user->userInstitusi);
 
             $request->session()->regenerate();
             return redirect()->intended('dashboard');
@@ -28,9 +27,32 @@ class AuthController extends Controller
         return back()->with('failed', 'Gagal! Username atau password salah!');
     }
 
+    public function register()
+    {
+        return view('register');
+    }
+
+    public function registering(Request $request)
+    {
+        $request->validate([
+            'nama' => 'required',
+            'email' => 'required',
+            'password' => 'required'
+        ]);
+
+        User::create([
+            'name' => $request->nama,
+            'email' => $request->email,
+            'username' => '',
+            'password' => bcrypt($request->password),
+        ]);
+
+        return redirect('/login')->with('success', 'Berhasil daftar akun! Silahkan login.');
+    }
+
     public function login()
     {
-        return view('welcome');
+        return view('login');
     }
 
     public function logout(Request $request)

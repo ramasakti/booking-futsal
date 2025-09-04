@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Futsal Srikandi - Booking Lapangan</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(46, 204, 113, 0.2);
+        }
+
+        header h2 {
+            font-size: 1.8em;
+            font-weight: 600;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section - Landscape Layout */
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            min-height: 80vh;
+            padding: 60px 0;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(46, 204, 113, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(52, 152, 219, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .hero-text {
+            padding-right: 20px;
+        }
+
+        .hero h1 {
+            font-size: 3.2em;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 40px;
+            line-height: 1.8;
+        }
+
+        .hero-image {
+            position: relative;
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            height: 400px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .hero-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(46, 204, 113, 0.1), rgba(39, 174, 96, 0.1));
+            border-radius: 20px;
+        }
+
+        .hero-image::after {
+            content: '⚽';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4em;
+            color: white;
+            text-shadow: 0 0 30px rgba(46, 204, 113, 0.8), 0 0 60px rgba(46, 204, 113, 0.4);
+            animation: footballFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes footballFloat {
+
+            0%,
+            100% {
+                transform: translate(-50%, -50%) rotate(0deg) scale(1);
+            }
+
+            33% {
+                transform: translate(-50%, -55%) rotate(120deg) scale(1.1);
+            }
+
+            66% {
+                transform: translate(-50%, -45%) rotate(240deg) scale(0.9);
+            }
+        }
+
+        /* Courts Section */
+        .courts-section {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            margin: 60px 0;
+            border-radius: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .courts-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background:
+                radial-gradient(circle at 30% 40%, rgba(46, 204, 113, 0.05) 0%, transparent 30%),
+                radial-gradient(circle at 70% 60%, rgba(52, 152, 219, 0.05) 0%, transparent 30%);
+            animation: backgroundFloat 20s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes backgroundFloat {
+
+            0%,
+            100% {
+                transform: rotate(0deg) scale(1);
+            }
+
+            50% {
+                transform: rotate(5deg) scale(1.1);
+            }
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .section-title h2 {
+            font-size: 2.8em;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .section-title p {
+            font-size: 1.2em;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .courts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .court-card {
+            background: white;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s ease;
+            position: relative;
+            transform: translateY(0);
+        }
+
+        .court-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 25px 50px rgba(46, 204, 113, 0.2);
+        }
+
+        /* ===== KODE SLIDER BARU ===== */
+        .court-image {
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .image-slider {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .slider-container {
+            display: flex;
+            width: 300%;
+            height: 100%;
+            animation: slideShow 9s infinite;
+        }
+
+        .slide {
+            width: 33.333%;
+            height: 100%;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Lapangan Atas - Slides */
+        .court-card:nth-child(1) .slide:nth-child(1) {
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.8), rgba(192, 57, 43, 0.8)),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200"><rect width="400" height="200" fill="%23e74c3c"/><rect x="50" y="50" width="300" height="100" fill="none" stroke="white" stroke-width="3"/><circle cx="200" cy="100" r="30" fill="none" stroke="white" stroke-width="2"/><rect x="0" y="80" width="30" height="40" fill="none" stroke="white" stroke-width="2"/><rect x="370" y="80" width="30" height="40" fill="none" stroke="white" stroke-width="2"/></svg>');
+        }
+
+        .court-card:nth-child(1) .slide:nth-child(2) {
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.7), rgba(192, 57, 43, 0.7)),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200"><rect width="400" height="200" fill="%23c0392b"/><g stroke="white" stroke-width="2" fill="none"><rect x="20" y="20" width="360" height="160"/><line x1="200" y1="20" x2="200" y2="180"/><circle cx="100" cy="100" r="25"/><circle cx="300" cy="100" r="25"/></g></svg>');
+        }
+
+        .court-card:nth-child(1) .slide:nth-child(3) {
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.6), rgba(192, 57, 43, 0.6)),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200"><rect width="400" height="200" fill="%23e74c3c"/><rect x="30" y="30" width="340" height="140" fill="none" stroke="white" stroke-width="4"/><circle cx="200" cy="100" r="40" fill="none" stroke="white" stroke-width="3"/></svg>');
+        }
+
+        /* Lapangan Tengah - Slides */
+        .court-card:nth-child(2) .slide:nth-child(1) {
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.8), rgba(41, 128, 185, 0.8)),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200"><rect width="400" height="200" fill="%233498db"/><g stroke="white" stroke-width="3" fill="none"><rect x="40" y="40" width="320" height="120"/><circle cx="200" cy="100" r="35"/><rect x="10" y="70" width="25" height="60"/><rect x="365" y="70" width="25" height="60"/></g></svg>');
+        }
+
+        .court-card:nth-child(2) .slide:nth-child(2) {
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.7), rgba(41, 128, 185, 0.7)),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200"><rect width="400" height="200" fill="%232980b9"/><g stroke="white" stroke-width="2" fill="none"><rect x="50" y="50" width="300" height="100"/><circle cx="200" cy="100" r="30"/><line x1="200" y1="50" x2="200" y2="150"/></g></svg>');
+        }
+
+        .court-card:nth-child(2) .slide:nth-child(3) {
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.6), rgba(41, 128, 185, 0.6)),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200"><rect width="400" height="200" fill="%233498db"/><g stroke="white" stroke-width="4" fill="none"><rect x="25" y="25" width="350" height="150"/><circle cx="200" cy="100" r="45"/></g></svg>');
+        }
+
+        /* Lapangan Bawah - Slides */
+        .court-card:nth-child(3) .slide:nth-child(1) {
+            background: linear-gradient(135deg, rgba(243, 156, 18, 0.8), rgba(230, 126, 34, 0.8)),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200"><rect width="400" height="200" fill="%23f39c12"/><g stroke="white" stroke-width="4" fill="none"><rect x="30" y="30" width="340" height="140"/><circle cx="200" cy="100" r="40"/><rect x="5" y="65" width="30" height="70"/><rect x="365" y="65" width="30" height="70"/></g></svg>');
+        }
+
+        .court-card:nth-child(3) .slide:nth-child(2) {
+            background: linear-gradient(135deg, rgba(243, 156, 18, 0.7), rgba(230, 126, 34, 0.7)),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200"><rect width="400" height="200" fill="%23e67e22"/><g stroke="white" stroke-width="3" fill="none"><rect x="40" y="40" width="320" height="120"/><circle cx="200" cy="100" r="35"/><line x1="200" y1="40" x2="200" y2="160"/></g></svg>');
+        }
+
+        .court-card:nth-child(3) .slide:nth-child(3) {
+            background: linear-gradient(135deg, rgba(243, 156, 18, 0.6), rgba(230, 126, 34, 0.6)),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200"><rect width="400" height="200" fill="%23f39c12"/><g stroke="white" stroke-width="5" fill="none"><rect x="20" y="20" width="360" height="160"/><circle cx="200" cy="100" r="50"/></g></svg>');
+        }
+
+        .slide-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            color: white;
+            text-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            opacity: 0.9;
+        }
+
+        .court-card:nth-child(1) .slide-overlay::after {
+            content: '🏟️';
+        }
+
+        .court-card:nth-child(2) .slide-overlay::after {
+            content: '⭐';
+        }
+
+        .court-card:nth-child(3) .slide-overlay::after {
+            content: '👑';
+        }
+
+        @keyframes slideShow {
+
+            0%,
+            33.33% {
+                transform: translateX(0);
+            }
+
+            33.34%,
+            66.66% {
+                transform: translateX(-33.333%);
+            }
+
+            66.67%,
+            100% {
+                transform: translateX(-66.666%);
+            }
+        }
+
+        .slider-dots {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            animation: dotIndicator 9s infinite;
+        }
+
+        .dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .dot:nth-child(2) {
+            animation-delay: -3s;
+        }
+
+        .dot:nth-child(3) {
+            animation-delay: -6s;
+        }
+
+        @keyframes dotIndicator {
+
+            0%,
+            33.33% {
+                background: rgba(255, 255, 255, 1);
+                transform: scale(1.2);
+            }
+
+            33.34%,
+            100% {
+                background: rgba(255, 255, 255, 0.5);
+                transform: scale(1);
+            }
+        }
+
+        /* ===== AKHIR KODE SLIDER ===== */
+
+        .court-info {
+            padding: 30px;
+        }
+
+        .court-name {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .court-description {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .court-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .feature-tag {
+            background: linear-gradient(135deg, #ecf0f1, #bdc3c7);
+            color: #2c3e50;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .court-price {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .price {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #2ecc71;
+        }
+
+        .price-per {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .book-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+            padding: 12px 25px;
+            font-size: 1em;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+        }
+
+        .book-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(46, 204, 113, 0.4);
+        }
+
+        .court-card:nth-child(2) .book-btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .court-card:nth-child(2) .book-btn:hover {
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+        }
+
+        .court-card:nth-child(3) .book-btn {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            box-shadow: 0 5px 15px rgba(243, 156, 18, 0.3);
+        }
+
+        .court-card:nth-child(3) .book-btn:hover {
+            box-shadow: 0 8px 25px rgba(243, 156, 18, 0.4);
+        }
+
+        /* Features - Simple Grid */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 50px 0;
+        }
+
+        .feature {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(46, 204, 113, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .feature h3 {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .feature p {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+            text-align: center;
+            min-width: 200px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(46, 204, 113, 0.4);
+        }
+
+        .btn.secondary {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn.secondary:hover {
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+        }
+
+        /* Stats Section */
+        .stats {
+            background: white;
+            padding: 60px 0;
+            margin: 60px 0;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 20px;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #2ecc71;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 1.1em;
+            color: #666;
+        }
+
+        /* Footer */
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 60px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero {
+                grid-template-columns: 1fr;
+                gap: 40px;
+                text-align: center;
+                padding: 40px 0;
+            }
+
+            .hero-text {
+                padding-right: 0;
+            }
+
+            .hero h1 {
+                font-size: 2.5em;
+            }
+
+            .hero-image {
+                height: 300px;
+            }
+
+            .button-group {
+                justify-content: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .courts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-title h2 {
+                font-size: 2.2em;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            header h2 {
+                font-size: 1.5em;
+            }
+
+            .hero h1 {
+                font-size: 2em;
+            }
+
+            .hero p {
+                font-size: 1em;
+            }
+
+            .section-title h2 {
+                font-size: 1.8em;
+            }
+
+            .court-info {
+                padding: 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Loading animation for images */
+        .hero-image {
+            opacity: 0;
+            animation: fadeIn 1s ease-out 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h2>⚽ Futsal Srikandi Lampung</h2>
+    </header>
+    <div class="container">
+        <section class="hero">
+            <div class="hero-text">
+                <h1>Booking Lapangan Futsal Terbaik</h1>
+                <p>
+                    Nikmati kemudahan dalam memesan lapangan futsal berkualitas tinggi. Praktis, cepat, dan terpercaya
+                    untuk semua kebutuhan olahraga Anda.
+                </p>
+
+                <div class="button-group">
+                    <a href="{{ route('register') }}" class="btn">Register Sekarang</a>
+                    <a href="{{ route('login') }}" class="btn secondary">Login & Booking</a>
+                </div>
+            </div>
+
+            <div class="hero-image"></div>
+        </section>
+
+        <!-- Courts Section -->
+        <section class="courts-section">
+            <div class="section-title">
+                <h2>Pilih Lapangan Favorit Anda</h2>
+                <p>
+                    Lapangan berkualitas premium dengan fasilitas terbaik untuk pengalaman bermain yang tak terlupakan
+                </p>
+            </div>
+
+            @if (!empty($lapangan))
+                @foreach ($lapangan as $lapangan)
+                    <div class="courts-grid">
+                        <div class="court-card">
+                            <div class="court-image">
+                                <div class="image-slider">
+                                    <div class="slider-container">
+                                        @if (!empty($lapangan->foto))
+                                            @foreach ($lapangan->foto as $foto)
+                                                <div class="slide">
+                                                    <img src="uploads/{{ $foto->foto }}"
+                                                        style="width:100%; height:100%; object-fit:cover;">
+                                                </div>
+                                            @endforeach
+                                        @else
+                                            <!-- Jika tidak ada foto, tetap tampilkan overlay -->
+                                            <div class="slide">
+                                                <div class="slide-overlay"></div>
+                                            </div>
+                                            <div class="slide">
+                                                <div class="slide-overlay"></div>
+                                            </div>
+                                            <div class="slide">
+                                                <div class="slide-overlay"></div>
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <div class="slider-dots">
+                                        @if (!empty($lapangan->foto))
+                                            @foreach ($lapangan->foto as $dot)
+                                                <div class="dot"></div>
+                                            @endforeach
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="court-info">
+                                <h3 class="court-name">{{ $lapangan->nama_lapangan }}</h3>
+                                <div class="court-price">
+                                    <div>
+                                        <span class="price">
+                                            Rp {{ number_format($lapangan->harga_normal, 2, ',', '.') }}
+                                        </span>
+                                        <span class="price-per">/jam</span>
+                                    </div>
+                                </div>
+                                <a class="book-btn" style="text-decoration: none;"
+                                    href="public/booking.php?lapangan=">
+                                    Booking Sekarang
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            @endif
+        </section>
+    </div>
+</body>
+
+</html>

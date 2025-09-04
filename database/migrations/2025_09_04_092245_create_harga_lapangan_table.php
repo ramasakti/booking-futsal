@@ -11,10 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('beban_aktivitas_kelas', function (Blueprint $table) {
+        Schema::create('harga_lapangan', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('kelas_id')->constrained('kelas');
-            $table->foreignId('aktivitas_id')->constrained('master_aktivitas');
+            $table->foreignId('lapangan_id')->constrained('lapangan');
+            $table->enum('hari', ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu']);
+            $table->time('jam_mulai');
+            $table->time('jam_selesai');
+            $table->integer('harga');
             $table->timestamps();
         });
     }
@@ -24,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('beban_aktivitas_kelas');
+        Schema::dropIfExists('harga_lapangan');
     }
 };

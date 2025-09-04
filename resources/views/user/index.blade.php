@@ -20,7 +20,6 @@
                     <th>#</th>
                     <th>Username</th>
                     <th>Name</th>
-                    <th>Institusi</th>
                     <th>Role</th>
                     <th class="w-1">Aksi</th>
                 </tr>
@@ -31,7 +30,6 @@
                         <td>{{ $index + 1 }}</td>
                         <td>{{ $user->username }}</td>
                         <td>{{ $user->name }}</td>
-                        <td>{{ $user->userInstitusi->pluck('institusi')->pluck('institusi')->implode(', ') }}</td>
                         <td>{{ $user->userRole->pluck('role')->pluck('role')->implode(', ') }}</td>
                         <td>
                             <div class="d-inline">

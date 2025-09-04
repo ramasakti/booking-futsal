@@ -43,7 +43,7 @@
                 <!-- END NAVBAR TOGGLER -->
                 <!-- BEGIN NAVBAR LOGO -->
                 <div class="navbar-brand navbar-brand-autodark">
-                    <img src="/images/logo.png" style="max-height: 100px;">
+                    <img src="/images/logo.jpeg" class="rounded-circle" style="max-height: 100px;">
                 </div>
                 <div class="nav-item dropdown">
                     <div class="nav-item d-flex align-items-center">

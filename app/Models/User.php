@@ -59,9 +59,4 @@ class User extends Authenticatable
             return $userRole->role->role ?? null;
         })->filter()->values();
     }
-
-    public function userInstitusi()
-    {
-        return $this->hasMany(UserInstitusiModel::class, 'user_id');
-    }
 }

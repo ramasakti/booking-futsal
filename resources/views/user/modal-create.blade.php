@@ -22,19 +22,10 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Role</label>
-                        <select name="role_id" class="form-select" multiple required>
+                        <select name="role_id" class="form-select" required>
                             <option selected disabled>Pilih Role</option>
                             @foreach ($roles as $role)
                                 <option value="{{ $role->id }}">{{ $role->role }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Institusi</label>
-                        <select name="institusi_id" class="form-select" required>
-                            <option selected disabled>Pilih Institusi</option>
-                            @foreach ($institusies as $institusi)
-                                <option value="{{ $institusi->id }}">{{ $institusi->institusi }}</option>
                             @endforeach
                         </select>
                     </div>

@@ -15,12 +15,10 @@ class UsersController extends Controller
     public function index()
     {
         $title = "Users";
-        $users = User::with(['userRole.role', 'userInstitusi.institusi'])->get();
+        $users = User::with('userRole.role')->get();
         $roles = RoleModel::all();
-        $institusies = InstitusiModel::all();
 
-        dd($users[0]->userRole);
-        return view('user.index', compact('title', 'users', 'roles', 'institusies'));
+        return view('user.index', compact('title', 'users', 'roles'));
     }
 
     public function store(Request $request)
@@ -47,12 +45,6 @@ class UsersController extends Controller
                 UserRoleModel::create([
                     'user_id' => $user->id,
                     'role_id' => $request->role_id
-                ]);
-
-                // Menghubungkan user dengan institusi
-                UserInstitusiModel::create([
-                    'user_id' => $user->id,
-                    'institusi_id' => $request->institusi_id
                 ]);
             });
 

@@ -31,7 +31,9 @@
     <div class="page">
         <div class="container container-tight py-4">
             <div class="text-center mb-4">
-                <img src="/images/logo.png" style="max-height: 100px;">
+                <a href="/">
+                    <img src="/images/logo.jpeg" class="rounded-circle" style="max-height: 100px;">
+                </a>
             </div>
             <div class="card card-md">
                 <div class="card-body">
