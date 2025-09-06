@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AccessController;
+use App\Http\Controllers\API\JamController;
+use App\Http\Controllers\BookingsController;
 use App\Http\Controllers\MidtransController;
 use App\Http\Controllers\UserRoleController;
 
@@ -10,3 +12,4 @@ Route::post('/user/role', [UserRoleController::class, 'giveAndDropUserRole']);
 Route::post('/access/role', [AccessController::class, 'giveAndDropAccessRole']);
 
 Route::post('/midtrans/callback', [MidtransController::class, 'callback']);
+Route::get('/jam/{lapangan_id}/{tanggal}', [JamController::class, 'getJamKosongByLapanganAndTanggal']);

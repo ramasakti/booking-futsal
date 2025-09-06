@@ -77,6 +77,10 @@
                         <div class="form-footer">
                             <button type="submit" class="btn btn-primary w-100">Sign in</button>
                         </div>
+                        <div class="hr-text">or</div>
+                        <a href="{{ route('google.redirect') }}" class="btn w-100">
+                            <span class="icon social social-app-google"></span>Login with Google
+                        </a>
                     </form>
                 </div>
             </div>

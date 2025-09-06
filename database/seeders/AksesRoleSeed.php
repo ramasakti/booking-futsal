@@ -20,6 +20,23 @@ class AksesRoleSeed extends Seeder
                     'role_id' => 1,
                     'menu_id' => $menu->id
                 ]);
+            DB::table('access_role')
+                ->insert([
+                    'role_id' => 2,
+                    'menu_id' => $menu->id
+                ]);
         }
+        DB::table('access_role')->insert([
+            'role_id' => 3,
+            'menu_id' => 1
+        ]);
+        DB::table('access_role')->insert([
+            'role_id' => 3,
+            'menu_id' => 10
+        ]);
+        DB::table('access_role')->insert([
+            'role_id' => 3,
+            'menu_id' => 9
+        ]);
     }
 }

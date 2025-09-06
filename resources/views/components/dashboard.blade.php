@@ -19,6 +19,7 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <link rel="stylesheet" type="text/css" href="/datatables/datatables.min.css">
     <link href="/tabler-1.2.0/dashboard/libs/tom-select/dist/css/tom-select.css" rel="stylesheet">
+    <link href="/dropzone.css" rel="stylesheet">
     <!-- END PLUGINS STYLES -->
     <!-- BEGIN CUSTOM FONT -->
     <style>
@@ -43,7 +44,9 @@
                 <!-- END NAVBAR TOGGLER -->
                 <!-- BEGIN NAVBAR LOGO -->
                 <div class="navbar-brand navbar-brand-autodark">
-                    <img src="/images/logo.jpeg" class="rounded-circle" style="max-height: 100px;">
+                    <a href="/">
+                        <img src="/images/logo.jpeg" class="rounded-circle" style="max-height: 100px;">
+                    </a>
                 </div>
                 <div class="nav-item dropdown">
                     <div class="nav-item d-flex align-items-center">

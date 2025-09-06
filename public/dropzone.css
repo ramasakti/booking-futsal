@@ -1,0 +1,64 @@
+.dropzone {
+    position: relative;
+    width: 100%;
+    height: 160px;
+    margin: 24px auto;
+    border: 2px dashed #9aa4b2;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8fafc;
+    text-align: center;
+}
+
+.dropzone input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.dropzone-content {
+    color: #334155;
+    pointer-events: none;
+}
+
+.preview-grid {
+    max-width: 100%;
+    margin: 16px auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.preview-item {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .15);
+}
+
+.preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.remove-btn {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: rgba(0, 0, 0, 0);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 24px;
+    text-align: center;
+}

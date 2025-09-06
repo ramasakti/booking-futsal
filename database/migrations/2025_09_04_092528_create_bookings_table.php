@@ -16,12 +16,13 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained();
             $table->foreignId('lapangan_id')->constrained('lapangan');
             $table->date('tanggal');
-            $table->date('jam_mulai');
+            $table->time('jam_mulai');
             $table->integer('durasi_jam');
             $table->integer('total_harga');
+            $table->integer('total_bayar');
             $table->string('status');
-            $table->string('payment_reference');
-            $table->string('token');
+            $table->string('payment_reference')->nullable();
+            $table->string('token')->nullable();
             $table->timestamps();
         });
     }

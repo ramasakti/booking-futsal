@@ -726,7 +726,7 @@
                                         @if (!empty($lapangan->foto))
                                             @foreach ($lapangan->foto as $foto)
                                                 <div class="slide">
-                                                    <img src="uploads/{{ $foto->foto }}"
+                                                    <img src="{{ $foto->foto }}"
                                                         style="width:100%; height:100%; object-fit:cover;">
                                                 </div>
                                             @endforeach
@@ -757,13 +757,13 @@
                                 <div class="court-price">
                                     <div>
                                         <span class="price">
-                                            Rp {{ number_format($lapangan->harga_normal, 2, ',', '.') }}
+                                            Rp {{ number_format($lapangan->harga, 0, ',', '.') }}
                                         </span>
                                         <span class="price-per">/jam</span>
                                     </div>
                                 </div>
                                 <a class="book-btn" style="text-decoration: none;"
-                                    href="public/booking.php?lapangan=">
+                                    href="{{ route('booking.index') }}">
                                     Booking Sekarang
                                 </a>
                             </div>
