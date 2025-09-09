@@ -12,6 +12,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\GoogleAuthController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\TurnamenController;
 
 Route::get('/', [LandingController::class, 'index'])->name('landing');
@@ -72,12 +73,15 @@ Route::middleware(['auth', 'role'])->group(function () {
     Route::put('/turnamen/update/{id}', [TurnamenController::class, 'update'])->name('turnamen.update');
     Route::delete('/turnamen/delete/{id}', [TurnamenController::class, 'destroy'])->name('turnamen.destroy');
 
-    // Transaksi
-
-    
     // Booking
     Route::get('/booking', [BookingsController::class, 'index'])->name('booking.index');
     Route::get('/booking/booking', [BookingsController::class, 'booking'])->name('booking.booking');
     Route::post('/booking/store', [BookingsController::class, 'store'])->name('booking.store');
+    Route::delete('/booking/cancel/{id}', [BookingsController::class, 'cancel'])->name('booking.cancel');
+    Route::post('/booking/accept/{id}', [BookingsController::class, 'accept'])->name('booking.accept');
+    Route::get('/booking/status/{id}', [BookingsController::class, 'status'])->name('booking.status');
     Route::post('/booking/{id}', [BookingsController::class, 'update'])->name('booking.update');
 });
+
+// Invoice
+Route::get('/invoice/{id}', [InvoiceController::class, 'index'])->name('invoice.index');

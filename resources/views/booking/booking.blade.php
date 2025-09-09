@@ -50,7 +50,10 @@
                             <div class="col-6 text-end">
                                 <p class="h3">{{ Auth::user()->name }}</p>
                                 <address>
-                                    {{ Auth::user()->email }}
+                                    {{ Auth::user()->email }} <br />
+                                    @if (Auth::user()->saldo > 0)
+                                        Saldo Anda: Rp. {{ number_format(Auth::user()->saldo, 0, ',', '.') }}
+                                    @endif
                                 </address>
                             </div>
                             <div class="col-12 my-5">
@@ -67,7 +70,7 @@
                                     </div>
                                 </form>
                                 @if (request('lapangan_id'))
-                                    <div class="row text-center">
+                                    <div class="row text-center g-2">
                                         @foreach ($selected_lapangan->foto as $foto)
                                             <div class="col-4">
                                                 <img src="/{{ $foto->foto }}" class="rounded"
@@ -158,10 +161,8 @@
                                 <div class="col-md-6 col-12">
                                     <div class="mb-3">
                                         <label class="form-label">Nominal Booking</label>
-                                        <input type="number"
-                                            @if (request('lapangan_id')) min="{{ $selected_lapangan->harga / 2 }}"
-                                                max="{{ $selected_lapangan->harga }}" @endif
-                                            name="total_bayar" class="form-control" @disabled(!request('lapangan_id')) required>
+                                        <input type="number" name="total_bayar" class="form-control"
+                                            id="total_bayar" @disabled(!request('lapangan_id')) required>
                                     </div>
                                 </div>
                                 <div class="col-12">
@@ -206,6 +207,9 @@
     const durasi = document.getElementById("durasi");
     const query = new URLSearchParams(window.location.search);
     const lapangan_id = query.get("lapangan_id")
+    const harga_lapangan = "{{ $lapangan->harga }}";
+    const total_bayar = document.getElementById("total_bayar");
+    const saldo = "{{ Auth::user()->saldo }}";
 
     let available = []; // simpan data jam kosong dari API
 
@@ -282,6 +286,34 @@
         durasi.value = "";
     });
 
+    durasi.addEventListener("change", () => {
+        const hargaPerJam = parseInt(harga_lapangan);
+        const totalHarga = durasi.value * hargaPerJam;
+
+        // Kalau saldo sudah cukup untuk menutup semua harga
+        if (parseInt(saldo) >= totalHarga) {
+            total_bayar.value = 0; // semua dibayar pakai saldo
+            total_bayar.placeholder = "Dibayar penuh dengan saldo";
+
+            total_bayar.value = 0; // default minimal
+            total_bayar.min = 0;
+            total_bayar.max = 0;
+        } else {
+            const min = (totalHarga / 2) - parseInt(saldo);
+            const max = totalHarga - parseInt(saldo);
+
+            // Pastikan tidak negatif
+            const minBayar = Math.max(min, (harga_lapangan * durasi.value - saldo) / 2);
+            const maxBayar = Math.max(max, (harga_lapangan * durasi.value) - saldo);
+
+            total_bayar.value = minBayar; // default minimal
+            total_bayar.placeholder = `${minBayar} - ${maxBayar}`;
+            total_bayar.min = minBayar;
+            total_bayar.max = maxBayar;
+        }
+    });
+
+
     // Submit booking
     document.getElementById("bookingForm").addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -297,25 +329,23 @@
         });
 
         const result = await response.json();
-        console.log(result)
 
         if (result.success) {
-            snap.pay(result.snapToken, {
-                onSuccess: function(res) {
-                    console.log("success", res);
-                },
-                onPending: function(res) {
-                    console.log("pending", res);
-                },
-                onError: function(res) {
-                    console.log("error", res);
-                },
-                onClose: function() {
-                    alert("Anda menutup pembayaran.");
-                }
-            });
-        } else {
-            alert("Gagal membuat transaksi: " + result.message);
+            if (result.bayarMidtrans > 0) {
+                snap.pay(result.snapToken, {
+                    onSuccess: () => window.location.href = '/booking',
+                    onPending: () => window.location.href = '/booking',
+                    onError: () => window.location.href = '/booking',
+                    onClose: () => {
+                        alert("Anda menutup pembayaran.");
+                        window.location.href = '/booking';
+                    }
+                });
+            } else {
+                // Semua ditutup saldo
+                alert("Booking berhasil dibayar penuh dengan saldo!");
+                window.location.href = '/booking';
+            }
         }
     });
 </script>

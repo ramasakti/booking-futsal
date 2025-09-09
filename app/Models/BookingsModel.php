@@ -12,4 +12,9 @@ class BookingsModel extends Model
     {
         return $this->hasOne(LapanganModel::class, 'id', 'lapangan_id');
     }
+
+    public function pemesan()
+    {
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
 }

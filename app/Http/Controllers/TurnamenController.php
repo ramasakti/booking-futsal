@@ -23,11 +23,25 @@ class TurnamenController extends Controller
             'nama_turnamen' => 'required',
             'banner' => 'required',
             'deskripsi' => 'required',
-            'tanggal' => 'required',
             'biaya' => 'required',
         ]);
 
-        
+        if (!$request->hasFile('banner')) {
+            return back()->with('failed', 'Gagal! Wajib memilih gambar turnamen');
+        }
+
+        $file = $request->file('banner');
+        $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+
+        TurnamenModel::create([
+            'nama_turnamen' => $request->nama_turnamen,
+            'banner' => $filename,
+            'deskripsi' => $request->deskripsi,
+            'biaya' => $request->biaya,
+            'active' => 1
+        ]);
+
+        $file->move(public_path('banner_turnamen'), $filename);
 
         return back()->with('success', 'Berhasil tambah turnamen');
     }

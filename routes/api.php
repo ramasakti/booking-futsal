@@ -13,3 +13,4 @@ Route::post('/access/role', [AccessController::class, 'giveAndDropAccessRole']);
 
 Route::post('/midtrans/callback', [MidtransController::class, 'callback']);
 Route::get('/jam/{lapangan_id}/{tanggal}', [JamController::class, 'getJamKosongByLapanganAndTanggal']);
+Route::get('/jadwal', [BookingsController::class, 'jadwal']);

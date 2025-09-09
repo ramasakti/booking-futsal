@@ -26,8 +26,8 @@
                 <tr>
                     <th>#</th>
                     <th>Nama Turnamen</th>
+                    <th>Biaya Pendaftaran</th>
                     <th>Foto</th>
-                    <th>Harga / Jam</th>
                     <th class="w-1">Aksi</th>
                 </tr>
             </thead>
@@ -36,17 +36,26 @@
                     <tr>
                         <td>{{ $index + 1 }}</td>
                         <td>{{ $turnamen->nama_turnamen }}</td>
+                        <td>Rp. {{ number_format($turnamen->biaya, 0, ',', '.') }}</td>
                         <td>
-                            @foreach ($turnamen->foto as $ifoto => $foto)
-                                <li>
-                                    <a target="_blank" href="{{ $foto->foto }}">Foto {{ $ifoto + 1 }}</a>
-                                </li>
-                            @endforeach
+                            <a href="/banner_turnamen/{{ $turnamen->banner }}" class="btn btn-info btn-icon" target="_blank">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round"
+                                    class="icon icon-tabler icons-tabler-outline icon-tabler-photo-share">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                    <path d="M15 8h.01" />
+                                    <path d="M12 21h-6a3 3 0 0 1 -3 -3v-12a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v7" />
+                                    <path d="M3 16l5 -5c.928 -.893 2.072 -.893 3 0l3 3" />
+                                    <path d="M14 14l1 -1c.928 -.893 2.072 -.893 3 0" />
+                                    <path d="M16 22l5 -5" />
+                                    <path d="M21 21.5v-4.5h-4.5" />
+                                </svg>
+                            </a>
                         </td>
-                        <td>Rp. {{ number_format($turnamen->harga, 0, ',', '.') }}</td>
                         <td>
                             <div class="d-inline">
-                                <a class="btn btn-dark btn-icon" href="{{ route('turnamen.edit', $turnamen->id) }}">
+                                <a class="btn btn-dark btn-icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                         stroke-linecap="round" stroke-linejoin="round"
@@ -71,7 +80,7 @@
                                         <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
                                     </svg>
                                 </button>
-                                @include('turnamen.delete')
+                                @include('turnamen.modal-delete')
                             </div>
                         </td>
                     </tr>
@@ -89,36 +98,17 @@
         const input = document.getElementById('file-input');
         const preview = document.getElementById('preview');
 
-        let filesArray = []; // simpan file yang dipilih
-
         input.addEventListener('change', () => {
-            filesArray = [...filesArray, ...Array.from(input.files)];
-            renderPreviews();
+            preview.innerHTML = ''; // hapus preview lama
+
+            const file = input.files[0];
+            if (!file || !file.type.startsWith('image/')) return;
+
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(file);
+            img.onload = () => URL.revokeObjectURL(img.src);
+
+            preview.appendChild(img);
         });
-
-        function renderPreviews() {
-            preview.innerHTML = '';
-            filesArray.forEach((file, index) => {
-                if (!file.type.startsWith('image/')) return;
-                const item = document.createElement('div');
-                item.className = 'preview-item';
-
-                const img = document.createElement('img');
-                img.src = URL.createObjectURL(file);
-                img.onload = () => URL.revokeObjectURL(img.src);
-
-                const btn = document.createElement('button');
-                btn.className = 'remove-btn';
-                btn.innerHTML = '❌';
-                btn.onclick = () => {
-                    filesArray.splice(index, 1);
-                    renderPreviews();
-                };
-
-                item.appendChild(img);
-                item.appendChild(btn);
-                preview.appendChild(item);
-            });
-        }
     </script>
 </x-dashboard>

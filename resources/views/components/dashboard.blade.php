@@ -193,6 +193,8 @@
         integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
     <script type="text/javascript" src="/datatables/datatables.min.js"></script>
     <script src="/tabler-1.2.0/dashboard/libs/tom-select/dist/js/tom-select.complete.min.js"></script>
+    <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js"
+        data-client-key="{{ env('MIDTRANS_PUBLIC_KEY') }}"></script>
     {{-- End Vendor --}}
     <!-- BEGIN PAGE SCRIPTS -->
     <script>

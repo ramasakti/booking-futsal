@@ -19,6 +19,8 @@ return new class extends Migration
             $table->time('jam_mulai');
             $table->integer('durasi_jam');
             $table->integer('total_harga');
+            $table->integer('saldo_used');
+            $table->integer('bayar_midtrans');
             $table->integer('total_bayar');
             $table->string('status');
             $table->string('payment_reference')->nullable();

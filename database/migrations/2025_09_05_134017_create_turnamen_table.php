@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('nama_turnamen');
             $table->text('banner');
             $table->text('deskripsi');
-            $table->date('tanggal');
             $table->integer('biaya');
+            $table->boolean('active');
             $table->timestamps();
         });
     }
