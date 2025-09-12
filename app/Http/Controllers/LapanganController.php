@@ -32,6 +32,9 @@ class LapanganController extends Controller
             'harga' => 'required',
         ]);
 
+        // Parsing nilai harga
+        $harga = (int) preg_replace('/[^0-9]/', '', $request->harga);
+
         // Variabel untuk menampung file yang diupload
         $fotoPaths = [];
 
@@ -47,7 +50,7 @@ class LapanganController extends Controller
         // Simpan data lapangan ke db
         $lapangan = LapanganModel::create([
             'nama_lapangan' => $request->nama_lapangan,
-            'harga' => $request->harga,
+            'harga' => $harga,
             'deskripsi' => $request->deskripsi ?? ''
         ]);
 
@@ -77,6 +80,9 @@ class LapanganController extends Controller
             'nama_lapangan' => 'required',
             'harga' => 'required',
         ]);
+
+        // Parsing nilai harga
+        $harga = (int) preg_replace('/[^0-9]/', '', $request->harga);
 
         // Ambil data lapangan
         $lapangan = LapanganModel::with('foto')->where('id', $id)->first();
@@ -109,7 +115,7 @@ class LapanganController extends Controller
 
         // Simpan perubahan data lapangan
         $lapangan->nama_lapangan = $request->nama_lapangan;
-        $lapangan->harga = $request->harga;
+        $lapangan->harga = $harga;
         $lapangan->save();
 
         return redirect('/lapangan')->with('success', 'Berhasil update lapangan');

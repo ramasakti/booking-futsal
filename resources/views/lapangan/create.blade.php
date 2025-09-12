@@ -12,7 +12,8 @@
             <div class="mb-3">
                 <div class="col-12">
                     <label class="form-label">Harga</label>
-                    <input type="text" name="harga" class="form-control" placeholder="Harga Lapangan / Jam">
+                    <input type="text" name="harga" id="harga" class="form-control"
+                        placeholder="Harga Lapangan / Jam">
                 </div>
             </div>
             <label class="dropzone">
@@ -42,15 +43,21 @@
     <div id="preview" style="max-width: min(560px, 92vw); margin:12px auto; display:flex; flex-wrap:wrap; gap:10px;">
     </div>
 
+    @include('components.rupiah')
     <script>
         const input = document.getElementById('file-input');
         const preview = document.getElementById('preview');
+        const harga = document.getElementById('harga');
 
         let filesArray = []; // simpan file yang dipilih
 
         input.addEventListener('change', () => {
             filesArray = [...filesArray, ...Array.from(input.files)];
             renderPreviews();
+        });
+
+        harga.addEventListener('input', function(e) {
+            this.value = formatRupiah(this.value);
         });
 
         function renderPreviews() {

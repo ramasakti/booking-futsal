@@ -15,8 +15,8 @@
             <div class="mb-3">
                 <div class="col-12">
                     <label class="form-label">Harga</label>
-                    <input type="text" name="harga" class="form-control" placeholder="Harga Lapangan / Jam"
-                        value="{{ $lapangan->harga }}">
+                    <input type="text" name="harga" id="harga" class="form-control"
+                        placeholder="Harga Lapangan / Jam" value="{{ $lapangan->harga }}">
                 </div>
             </div>
             <label class="dropzone">
@@ -54,16 +54,21 @@
         </form>
     </div>
 
-
+    @include('components.rupiah')
     <script>
         const input = document.getElementById('file-input');
         const previewNew = document.getElementById('preview-new'); // untuk foto baru
+        const harga = document.getElementById('harga');
 
         let filesArray = []; // simpan file yang dipilih
 
         input.addEventListener('change', () => {
             filesArray = [...filesArray, ...Array.from(input.files)];
             renderPreviews();
+        });
+
+        harga.addEventListener('input', function(e) {
+            this.value = formatRupiah(this.value);
         });
 
         function renderPreviews() {
@@ -90,6 +95,8 @@
                 previewNew.appendChild(item);
             });
         }
+
+        window.addEventListener("DOMContentLoaded", () => harga.value = formatRupiah("{{ $lapangan->harga }}"))
 
         document.addEventListener("click", function(e) {
             if (e.target.classList.contains("remove-btn") && e.target.dataset.id) {
