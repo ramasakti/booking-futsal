@@ -61,8 +61,8 @@
                     <form action="{{ route('authenticate') }}" method="post" autocomplete="off" novalidate>
                         @csrf
                         <div class="mb-3">
-                            <label class="form-label">Email address</label>
-                            <input type="email" class="form-control" placeholder="your@email.com" autocomplete="off"
+                            <label class="form-label">Username / Email</label>
+                            <input type="email" class="form-control" placeholder="Username / Email" autocomplete="off"
                                 name="email" />
                         </div>
                         <div class="mb-2">

@@ -12,11 +12,23 @@ class AuthController extends Controller
     public function authenticate(Request $request)
     {
         $credentials = $request->validate([
-            'email' => ['required', 'email'],
+            'email' => ['required', 'string'],
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt($credentials)) {
+        $loginField = $credentials['email'];
+        $password = $credentials['password'];
+
+        // Cari user berdasarkan email atau username
+        $user = User::where('email', $loginField)
+            ->orWhere('username', $loginField)
+            ->first();
+
+        if ($user && Auth::attempt([
+            filter_var($loginField, FILTER_VALIDATE_EMAIL) ? 'email' : 'username' => $loginField,
+            'password' => $password,
+        ])) {
+            // Ambil user beserta role-nya
             $user = User::with('userRole.role')->where('id', Auth::user()->id)->first();
             $request->session()->put('roles', $user->userRole);
 
