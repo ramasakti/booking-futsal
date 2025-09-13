@@ -33,7 +33,8 @@
                         <td>{{ $user->userRole->pluck('role')->pluck('role')->implode(', ') }}</td>
                         <td>
                             <div class="d-inline">
-                                <button class="btn btn-dark btn-icon" data-bs-toggle="modal" data-bs-target="#edit-user-{{ $user->id }}">
+                                <button class="btn btn-dark btn-icon" data-bs-toggle="modal"
+                                    data-bs-target="#edit-user-{{ $user->id }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                         stroke-linecap="round" stroke-linejoin="round"
@@ -57,5 +58,32 @@
         window.addEventListener("DOMContentLoaded", () => {
             new DataTable('#table-user');
         })
+
+        // Preview untuk create
+        document.getElementById('create-avatar').addEventListener('change', function(e) {
+            const preview = document.getElementById('preview-create-avatar');
+            if (this.files && this.files[0]) {
+                preview.src = URL.createObjectURL(this.files[0]);
+                preview.classList.remove('d-none');
+            } else {
+                preview.src = '';
+                preview.classList.add('d-none');
+            }
+        });
+
+        // Preview untuk edit (multiple modal)
+        document.querySelectorAll('.edit-avatar').forEach(input => {
+            input.addEventListener('change', function() {
+                const previewId = this.dataset.preview;
+                const preview = document.getElementById(previewId);
+                if (this.files && this.files[0]) {
+                    preview.src = URL.createObjectURL(this.files[0]);
+                    preview.classList.remove('d-none');
+                } else {
+                    preview.src = '';
+                    preview.classList.add('d-none');
+                }
+            });
+        });
     </script>
 </x-dashboard>

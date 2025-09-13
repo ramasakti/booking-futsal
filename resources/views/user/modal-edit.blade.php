@@ -1,7 +1,8 @@
 <div class="modal" id="edit-user-{{ $user->id }}" tabindex="-1">
     <div class="modal-dialog" role="document">
-        <form action="{{ route('user.update', $user->id) }}" method="post">
-            @csrf 
+        <form action="{{ route('user.update', $user->id) }}" method="post" enctype="multipart/form-data">
+            @csrf
+            @method('PUT')
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Edit User</h5>
@@ -10,7 +11,8 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label">Username</label>
-                        <input type="text" name="username" class="form-control" value="{{ $user->username }}" readonly>
+                        <input type="text" name="username" class="form-control" value="{{ $user->username }}"
+                            readonly>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Nama</label>
@@ -19,6 +21,15 @@
                     <div class="mb-3">
                         <label class="form-label">Email</label>
                         <input type="text" name="email" class="form-control" value="{{ $user->email }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Avatar</label>
+                        <input type="file" name="avatar" class="form-control edit-avatar"
+                            data-preview="preview-edit-avatar-{{ $user->id }}">
+                        {{-- Preview --}}
+                        <img id="preview-edit-avatar-{{ $user->id }}"
+                            class="mt-2 {{ $user->avatar ? '' : 'd-none' }} rounded"
+                            src="{{ $user->avatar ? '/avatar/' . $user->avatar : '' }}" width="100">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Role</label>
@@ -34,7 +45,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn me-auto" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-dark" data-bs-dismiss="modal">Submit</button>
+                    <button type="submit" class="btn btn-dark" data-bs-dismiss="modal">Simpan</button>
                 </div>
             </div>
         </form>

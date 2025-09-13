@@ -1,7 +1,7 @@
 <div class="modal" id="create-user" tabindex="-1">
     <div class="modal-dialog" role="document">
-        <form action="{{ route('user.store') }}" method="post">
-            @csrf 
+        <form action="{{ route('user.store') }}" method="post" enctype="multipart/form-data">
+            @csrf
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Tambah User</h5>
@@ -19,6 +19,12 @@
                     <div class="mb-3">
                         <label class="form-label">Email</label>
                         <input type="text" name="email" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Avatar</label>
+                        <input type="file" name="avatar" class="form-control" id="create-avatar">
+                        {{-- Preview --}}
+                        <img id="preview-create-avatar" class="mt-2 d-none rounded" width="100">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Role</label>
