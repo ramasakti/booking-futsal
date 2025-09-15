@@ -161,7 +161,7 @@
                                 <div class="col-md-6 col-12">
                                     <div class="mb-3">
                                         <label class="form-label">Nominal Booking</label>
-                                        <input type="number" name="total_bayar" class="form-control"
+                                        <input type="text" name="total_bayar" class="form-control"
                                             id="total_bayar" @disabled(!request('lapangan_id')) required>
                                     </div>
                                 </div>
@@ -198,6 +198,8 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script type="text/javascript" src="/datatables/datatables.min.js"></script>
 <script src="/tabler-1.2.0/dashboard/libs/tom-select/dist/js/tom-select.complete.min.js"></script>
+@include('components.rupiah')
+@include('components.rupiah-to-int')
 <script>
     const today = new Date();
     today.setDate(today.getDate() + 1);
@@ -210,6 +212,7 @@
     const harga_lapangan = "{{ $lapangan->harga }}";
     const total_bayar = document.getElementById("total_bayar");
     const saldo = "{{ Auth::user()->saldo }}";
+    let hargaMin, hargaMax = 0;
 
     let available = []; // simpan data jam kosong dari API
 
@@ -271,7 +274,6 @@
 
         // reset semua opsi durasi
         [...durasi.options].forEach((option, index) => {
-            console.log(option)
             if (index === 0) return; // skip placeholder
             const value = parseInt(option.value);
             if (value <= maxDurasi && value > 0) {
@@ -306,13 +308,22 @@
             const minBayar = Math.max(min, (harga_lapangan * durasi.value - saldo) / 2);
             const maxBayar = Math.max(max, (harga_lapangan * durasi.value) - saldo);
 
-            total_bayar.value = minBayar; // default minimal
-            total_bayar.placeholder = `${minBayar} - ${maxBayar}`;
-            total_bayar.min = minBayar;
-            total_bayar.max = maxBayar;
+            total_bayar.value = formatRupiah(minBayar); // default minimal
+            total_bayar.placeholder = `${formatRupiah(minBayar)} - ${formatRupiah(maxBayar)}`;
+            hargaMin = parseRupiahToInt(minBayar)
+            hargaMax = parseRupiahToInt(maxBayar)
         }
     });
 
+    total_bayar.addEventListener("input", () => {
+        total_bayar.value = formatRupiah(total_bayar.value)
+
+        let total_bayar_now = parseRupiahToInt(total_bayar.value)
+        if (total_bayar_now < hargaMin || total_bayar_now > hargaMax) {
+            console.log(total_bayar_now, hargaMin, hargaMax)
+            total_bayar.classList.add('is-invalid')
+        }
+    })
 
     // Submit booking
     document.getElementById("bookingForm").addEventListener("submit", async (e) => {

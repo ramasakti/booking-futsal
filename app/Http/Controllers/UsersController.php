@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\UserInstitusiModel;
 use App\Models\UserRoleModel;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 class UsersController extends Controller
 {
@@ -28,14 +29,21 @@ class UsersController extends Controller
             'email' => 'required|unique:users,email',
             'username' => 'required|unique:users,username',
             'role_id' => 'required',
-            'institusi_id' => 'required'
         ]);
 
         try {
             DB::transaction(function () use ($request) {
+                $filename = '';
+                if ($request->hasFile('avatar')) {
+                    $file = $request->file('avatar');
+                    $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                    $file->move(public_path('avatar'), $filename);
+                }
+                
                 // Membuat user baru
                 $user = User::create([
                     'name' => $request->name,
+                    'avatar' => $filename,
                     'email' => $request->email,
                     'username' => $request->username,
                     'password' => bcrypt($request->password),
@@ -49,14 +57,15 @@ class UsersController extends Controller
             });
 
             return back()->with('success', 'Berhasil membuat user!');
-        } catch (\Throwable $th) {
+        } catch (\Exception $e) {
+            dd($e);
             return back()->with('error', 'Gagal membuat user. ' . $th->getMessage());
         }
     }
 
     public function update($id, Request $request)
     {
-        $user = User::find($id);
+        $user = User::with('userRole')->where('id', $id)->first();
         if (!$user) {
             return back()->with('error', 'User tidak ditemukan.');
         }
@@ -66,11 +75,22 @@ class UsersController extends Controller
             'email' => 'required|unique:users,email,' . $id,
             'username' => 'required|unique:users,username,' . $id,
             'role_id' => 'required',
-            'institusi_id' => 'required'
         ]);
 
         try {
             DB::transaction(function () use ($user, $request) {
+                // Update foto profil user
+                if ($user->avatar && $request->hasFile('avatar')) {
+                    $path = public_path('avatar/' . $user->avatar);
+                    if (File::exists($path)) {
+                        File::delete($path);
+                    }
+                    $file = $request->file('avatar');
+                    $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                    $file->move(public_path('avatar'), $filename);
+                    $user->avatar = $filename;
+                }
+
                 // Update user
                 $user->name = $request->name;
                 $user->email = $request->email;
@@ -78,16 +98,13 @@ class UsersController extends Controller
                 $user->save();
 
                 // Hapus dan masukkan kembali role
-                $user->roles()->delete();
-                $user->roles()->create(['role_id' => $request->role_id]);
-
-                // Hapus dan masukkan kembali institusi
-                $user->institusi()->delete();
-                $user->institusi()->create(['institusi_id' => $request->institusi_id]);
+                $user->userRole()->delete();
+                $user->userRole()->create(['role_id' => $request->role_id]);
             });
 
             return back()->with('success', 'Berhasil update user!');
-        } catch (\Throwable $th) {
+        } catch (\Exception $e) {
+            dd($e);
             return back()->with('error', 'Gagal mengupdate user: ' . $th->getMessage());
         }
     }
