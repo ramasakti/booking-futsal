@@ -54,8 +54,10 @@ class BookingsController extends Controller
             'tanggal'     => 'required|date',
             'jam'         => 'required',
             'durasi'      => 'required|integer|min:1',
-            'total_bayar' => 'required|numeric|min:0'
+            'total_bayar' => 'required'
         ]);
+
+        $totalBayar = (int) preg_replace('/[^0-9]/', '', $request->total_bayar);
 
         if ($validator->fails()) {
             return response()->json([
@@ -72,7 +74,7 @@ class BookingsController extends Controller
 
         $totalHarga = (int) $lapangan->harga * (int) $request->durasi;
         $userSaldo  = (int) $user->saldo;
-        $requestedCash = (int) $request->total_bayar; // nominal cash yg ingin dibayar user (dari frontend)
+        $requestedCash = (int) $totalBayar; // nominal cash yg ingin dibayar user (dari frontend)
 
         // hitung batas minimal dan maksimal cash yang bisa dibayar setelah memperhitungkan saldo
         if ($userSaldo >= $totalHarga) {

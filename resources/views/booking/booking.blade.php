@@ -316,18 +316,26 @@
     });
 
     total_bayar.addEventListener("input", () => {
-        total_bayar.value = formatRupiah(total_bayar.value)
+        total_bayar.value = formatRupiah(total_bayar.value);
 
-        let total_bayar_now = parseRupiahToInt(total_bayar.value)
+        let total_bayar_now = parseRupiahToInt(total_bayar.value);
         if (total_bayar_now < hargaMin || total_bayar_now > hargaMax) {
-            console.log(total_bayar_now, hargaMin, hargaMax)
-            total_bayar.classList.add('is-invalid')
+            total_bayar.classList.add('is-invalid');
+        } else {
+            total_bayar.classList.remove('is-invalid');
         }
-    })
+    });
 
     // Submit booking
     document.getElementById("bookingForm").addEventListener("submit", async (e) => {
         e.preventDefault();
+
+        let total_bayar_now = parseRupiahToInt(total_bayar.value);
+        if (total_bayar_now < hargaMin || total_bayar_now > hargaMax) {
+            total_bayar.classList.add('is-invalid');
+            alert("Nominal booking tidak sesuai rentang minimal/maksimal.");
+            return;
+        }
 
         const formData = new FormData(e.target);
 
@@ -360,6 +368,5 @@
         }
     });
 </script>
-
 
 </html>
