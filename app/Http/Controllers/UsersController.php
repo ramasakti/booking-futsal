@@ -126,4 +126,16 @@ class UsersController extends Controller
             "payload" => $user
         ], 200);
     }
+
+    public function reset($username, Request $request)
+    {
+        $request->validate(['password' => 'required']);
+
+        User::where('username', $username)
+            ->update([
+                'password' => bcrypt($request->password)
+            ]);
+
+        return back()->with('success', 'Berhasil reset password');
+    }
 }

@@ -40,6 +40,7 @@ Route::middleware(['auth', 'role'])->group(function () {
     Route::put('/user/update/{id}', [UsersController::class, 'update'])->name('user.update');
     Route::delete('/user/destroy/{id}', [UsersController::class, 'destroy'])->name('user.destroy');
     Route::get('/user/detail/{id}', [UsersController::class, 'detail'])->name('user.detail');
+    Route::put('/user/reset/{username}', [UsersController::class, 'reset'])->name('user.reset');
 
     // Role
     Route::get('/role', [RoleController::class, 'index'])->name('role.index');
