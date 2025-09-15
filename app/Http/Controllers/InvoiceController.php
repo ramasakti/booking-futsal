@@ -7,9 +7,11 @@ use Illuminate\Http\Request;
 
 class InvoiceController extends Controller
 {
-    public function index($id)
+    public function index($booking_id)
     {
-        $booking = BookingsModel::find($id);
+        $booking = BookingsModel::with(['pemesan', 'lapangan'])
+            ->where('payment_reference', $booking_id)
+            ->first();
 
         if (!$booking) {
             return abort(404);

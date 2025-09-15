@@ -89,4 +89,4 @@ Route::middleware(['auth', 'role'])->group(function () {
 });
 
 // Invoice
-Route::get('/invoice/{id}', [InvoiceController::class, 'index'])->name('invoice.index');
+Route::get('/invoice/{booking_id}', [InvoiceController::class, 'index'])->name('invoice');
