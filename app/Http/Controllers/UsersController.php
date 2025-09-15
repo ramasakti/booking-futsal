@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\InstitusiModel;
 use Illuminate\Http\Request;
 use App\Models\RoleModel;
 use App\Models\User;
-use App\Models\UserInstitusiModel;
 use App\Models\UserRoleModel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
 
 class UsersController extends Controller
 {
@@ -39,7 +38,7 @@ class UsersController extends Controller
                     $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
                     $file->move(public_path('avatar'), $filename);
                 }
-                
+
                 // Membuat user baru
                 $user = User::create([
                     'name' => $request->name,
@@ -61,6 +60,15 @@ class UsersController extends Controller
             dd($e);
             return back()->with('error', 'Gagal membuat user. ' . $th->getMessage());
         }
+    }
+
+    public function edit($username, Request $request)
+    {
+        $user = User::where('username', $username)->first();
+        return view('user.edit', [
+            'title' => 'Edit Profil',
+            'user' => $user
+        ]);
     }
 
     public function update($id, Request $request)
@@ -137,5 +145,50 @@ class UsersController extends Controller
             ]);
 
         return back()->with('success', 'Berhasil reset password');
+    }
+
+    public function change($username, Request $request)
+    {
+        $user = User::where('username', $username)->firstOrFail();
+
+        // --- VALIDASI DASAR ---
+        $request->validate([
+            'old_password'    => 'nullable|string',
+            'new_password'    => 'nullable|string|min:8',
+            'confirm_password' => 'nullable|string|same:new_password',
+            'avatar'          => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        // --- GANTI PASSWORD ---
+        if ($request->filled('new_password')) {
+            if (!Hash::check($request->old_password, $user->password)) {
+                return back()->withErrors(['old_password' => 'Password lama tidak sesuai.']);
+            }
+
+            $user->password = bcrypt($request->new_password);
+        }
+
+        // --- GANTI AVATAR ---
+        if ($request->hasFile('avatar')) {
+            // Hapus avatar lama jika ada
+            if ($user->avatar) {
+                $oldPath = public_path('avatar/' . $user->avatar);
+                if (File::exists($oldPath)) {
+                    File::delete($oldPath);
+                }
+            }
+
+            // Simpan avatar baru
+            $file = $request->file('avatar');
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('avatar'), $filename);
+
+            $user->avatar = $filename;
+        }
+
+        // Simpan perubahan
+        $user->save();
+
+        return back()->with('success', 'Berhasil update data');
     }
 }

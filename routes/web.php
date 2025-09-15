@@ -27,7 +27,11 @@ Route::middleware('guest')->group(function () {
     Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->name('google.callback');
 });
 
-Route::get('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
+Route::middleware('auth')->group(function () {
+    Route::get('/user/edit/{username}', [UsersController::class, 'edit'])->name('user.edit');
+    Route::put('/user/change/{username}', [UsersController::class, 'change'])->name('user.change');
+    Route::get('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
+});
 
 // Middleware 'role' untuk authorization route berdasarkan role
 Route::middleware(['auth', 'role'])->group(function () {
