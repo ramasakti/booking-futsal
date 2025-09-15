@@ -20,6 +20,7 @@
     <link rel="stylesheet" type="text/css" href="/datatables/datatables.min.css">
     <link href="/tabler-1.2.0/dashboard/libs/tom-select/dist/css/tom-select.css" rel="stylesheet">
     <link href="/dropzone.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <!-- END PLUGINS STYLES -->
     <!-- BEGIN CUSTOM FONT -->
     <style>
@@ -195,6 +196,7 @@
     <script src="/tabler-1.2.0/dashboard/libs/tom-select/dist/js/tom-select.complete.min.js"></script>
     <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js"
         data-client-key="{{ env('MIDTRANS_PUBLIC_KEY') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     {{-- End Vendor --}}
     <!-- BEGIN PAGE SCRIPTS -->
     <script>

@@ -13,6 +13,8 @@ use Midtrans\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\BookingsExport;
 
 class BookingsController extends Controller
 {
@@ -350,4 +352,15 @@ class BookingsController extends Controller
     }
 
     public function callback() {}
+
+    public function export(Request $request)
+    {
+        $tanggal = $request->tanggal; // Contoh: "2025-09-01 to 2025-09-15"
+        $range = explode(" to ", $tanggal);
+
+        $startDate = $range[0] ?? null;
+        $endDate   = $range[1] ?? $range[0]; // kalau hanya pilih satu tanggal
+
+        return Excel::download(new BookingsExport($startDate, $endDate), "Laporan {$tanggal}.xlsx");
+    }
 }

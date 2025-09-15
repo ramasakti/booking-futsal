@@ -86,6 +86,7 @@ Route::middleware(['auth', 'role'])->group(function () {
     Route::post('/booking/accept/{id}', [BookingsController::class, 'accept'])->name('booking.accept');
     Route::get('/booking/status/{id}', [BookingsController::class, 'status'])->name('booking.status');
     Route::post('/booking/{id}', [BookingsController::class, 'update'])->name('booking.update');
+    Route::get('/booking/export', [BookingsController::class, 'export'])->name('booking.export');
 });
 
 // Invoice
