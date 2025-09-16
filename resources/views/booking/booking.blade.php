@@ -209,7 +209,7 @@
     const durasi = document.getElementById("durasi");
     const query = new URLSearchParams(window.location.search);
     const lapangan_id = query.get("lapangan_id")
-    const harga_lapangan = "{{ $lapangan->harga }}";
+    const harga_lapangan = "{{ $selected_lapangan->harga }}";
     const total_bayar = document.getElementById("total_bayar");
     const saldo = "{{ Auth::user()->saldo }}";
     let hargaMin, hargaMax = 0;
