@@ -166,7 +166,8 @@
                                     </div>
                                 </div>
                                 <div class="col-12">
-                                    <button type="submit" class="btn btn-dark w-100">Booking</button>
+                                    <button type="submit" class="btn btn-dark w-100"
+                                        id="bookingButton">Booking</button>
                                 </div>
                             </div>
                         </form>
@@ -328,43 +329,59 @@
 
     // Submit booking
     document.getElementById("bookingForm").addEventListener("submit", async (e) => {
-        e.preventDefault();
+        const bookingButton = document.getElementById("bookingButton")
+        bookingButton.classList.add("btn-loading")
+        try {
+            e.preventDefault();
 
-        let total_bayar_now = parseRupiahToInt(total_bayar.value);
-        if (total_bayar_now < hargaMin || total_bayar_now > hargaMax) {
-            total_bayar.classList.add('is-invalid');
-            alert("Nominal booking tidak sesuai rentang minimal/maksimal.");
-            return;
-        }
-
-        const formData = new FormData(e.target);
-
-        const response = await fetch("/booking/store", {
-            method: "POST",
-            headers: {
-                "X-CSRF-TOKEN": document.querySelector('input[name="_token"]').value
-            },
-            body: formData
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-            if (result.bayarMidtrans > 0) {
-                snap.pay(result.snapToken, {
-                    onSuccess: () => window.location.href = '/booking',
-                    onPending: () => window.location.href = '/booking',
-                    onError: () => window.location.href = '/booking',
-                    onClose: () => {
-                        alert("Anda menutup pembayaran.");
-                        window.location.href = '/booking';
-                    }
-                });
-            } else {
-                // Semua ditutup saldo
-                alert("Booking berhasil dibayar penuh dengan saldo!");
-                window.location.href = '/booking';
+            let total_bayar_now = parseRupiahToInt(total_bayar.value);
+            if (total_bayar_now < hargaMin || total_bayar_now > hargaMax) {
+                total_bayar.classList.add('is-invalid');
+                alert("Nominal booking tidak sesuai rentang minimal/maksimal.");
+                return;
             }
+
+            const formData = new FormData(e.target);
+
+            const response = await fetch("/booking/store", {
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": document.querySelector('input[name="_token"]').value
+                },
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                if (result.bayarMidtrans > 0) {
+                    snap.pay(result.snapToken, {
+                        onSuccess: () => window.location.href = '/booking',
+                        onPending: () => window.location.href = '/booking',
+                        onError: () => window.location.href = '/booking',
+                        onClose: () => {
+                            alert("Anda menutup pembayaran.");
+                            window.location.href = '/booking';
+                        }
+                    });
+                } else {
+                    // Semua ditutup saldo
+                    alert("Booking berhasil dibayar penuh dengan saldo!");
+                    window.location.href = '/booking';
+                }
+            }
+        } catch (error) {
+            console.error(error)
+            Toastify({
+                text: error.message,
+                duration: 3000,
+                position: "center",
+                style: {
+                    background: "#d63939"
+                }
+            }).showToast();
+        } finally {
+            bookingButton.classList.remove("btn-loading")
         }
     });
 </script>
