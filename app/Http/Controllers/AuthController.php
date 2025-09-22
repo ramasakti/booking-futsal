@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\KelasModel;
+use App\Models\UserRoleModel;
 
 class AuthController extends Controller
 {
@@ -64,11 +65,16 @@ class AuthController extends Controller
             ]
         );
 
-        User::create([
+        $user = User::create([
             'name' => $request->nama,
             'email' => $request->email,
             'username' => $request->username,
             'password' => bcrypt($request->password),
+        ]);
+
+        UserRoleModel::create([
+            'user_id' => $user->id,
+            'role_id' => 3,
         ]);
 
         return redirect('/login')->with('success', 'Berhasil daftar akun! Silahkan login.');
