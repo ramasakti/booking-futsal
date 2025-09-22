@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrasi</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <style>
         * {
             margin: 0;
@@ -333,7 +334,29 @@
             </div>
         </div>
 
+        @session('failed')
+            <div class="alert alert-danger" role="alert">
+                <div class="alert-icon">
+                    <!-- Download SVG icon from http://tabler.io/icons/icon/alert-circle -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="icon alert-icon icon-2">
+                        <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+                        <path d="M12 8v4" />
+                        <path d="M12 16h.01" />
+                    </svg>
+                </div>
+                <div>
+                    <h4 class="alert-heading">Maaf&hellip;</h4>
+                    <div class="alert-description">
+                        {{ session('failed') }}
+                    </div>
+                </div>
+            </div>
+        @endsession
+
         <form action="{{ route('registering') }}" method="POST">
+            @csrf
             <div class="form-group">
                 <div class="input-wrapper">
                     <div class="input-icon">⚽</div>
@@ -350,6 +373,13 @@
 
             <div class="form-group">
                 <div class="input-wrapper">
+                    <div class="input-icon">📧</div>
+                    <input type="text" name="username" placeholder="Username" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="input-wrapper">
                     <div class="input-icon">🔐</div>
                     <input type="password" name="password" placeholder="Password" required>
                 </div>
@@ -357,11 +387,44 @@
 
             <button type="submit">⚽ DAFTAR ⚽</button>
             <p style="margin-top: 10px;">
-                Sudah punya akun? 
+                Sudah punya akun?
                 <a href="{{ route('login') }}" style="text-decoration: none; color: #FFF;">Login</a>
             </p>
         </form>
     </div>
 </body>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script>
+    @if ($message = Session::get('success'))
+        Toastify({
+            text: "{!! $message !!}",
+            duration: 3000,
+            position: "center",
+            style: {
+                background: "#0ca678"
+            }
+        }).showToast();
+    @elseif (count($errors) > 0)
+        @foreach ($errors->all() as $error)
+            Toastify({
+                text: "{!! $error !!}",
+                duration: 3000,
+                position: "center",
+                style: {
+                    background: "#d63939"
+                }
+            }).showToast();
+        @endforeach
+    @elseif ($message = Session::get('failed'))
+        Toastify({
+            text: "{!! $message !!}",
+            duration: 3000,
+            position: "center",
+            style: {
+                background: "#d63939"
+            }
+        }).showToast();
+    @endif
+</script>
 
 </html>

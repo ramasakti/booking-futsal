@@ -46,11 +46,23 @@ class AuthController extends Controller
 
     public function registering(Request $request)
     {
-        $request->validate([
-            'nama' => 'required',
-            'email' => 'required',
-            'password' => 'required'
-        ]);
+        $request->validate(
+            [
+                'nama' => 'required',
+                'username' => 'required|unique:users,username',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required'
+            ],
+            [
+                'nama.required' => 'Nama wajib diisi.',
+                'username.required' => 'Username wajib diisi.',
+                'username.unique' => 'Username sudah digunakan, silakan pilih yang lain.',
+                'email.required' => 'Email wajib diisi.',
+                'email.email' => 'Format email tidak valid.',
+                'email.unique' => 'Email sudah terdaftar, gunakan email lain.',
+                'password.required' => 'Password wajib diisi.'
+            ]
+        );
 
         User::create([
             'name' => $request->nama,

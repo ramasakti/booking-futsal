@@ -20,7 +20,7 @@ Route::get('/', [LandingController::class, 'index'])->name('landing');
 // Auth
 Route::middleware('guest')->group(function () {
     Route::get('/register', [AuthController::class, 'register'])->name('register');
-    Route::get('/registering', [AuthController::class, 'registering'])->name('registering');
+    Route::post('/registering', [AuthController::class, 'registering'])->name('registering');
     Route::get('/login', [AuthController::class, 'login'])->name('login');
     Route::post('/authenticate', [AuthController::class, 'authenticate'])->name('authenticate');
     Route::get('/auth/google', [GoogleAuthController::class, 'redirect'])->name('google.redirect');
