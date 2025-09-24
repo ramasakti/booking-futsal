@@ -257,6 +257,18 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal Preview Gambar -->
+    <div class="modal" id="modalImage" tabindex="-1">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content" style="background: transparent; border: none; box-shadow: none;">
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                    style="position: absolute; top: 10px; right: 10px; z-index: 10;"></button>
+                <img id="modalImageContent" src=""
+                    style="max-width: 100%; max-height: 90vh; display: block; margin: auto;">
+            </div>
+        </div>
+    </div>
 </body>
 <script src="/tabler-1.2.0/dashboard/libs/apexcharts/dist/apexcharts.min.js" defer></script>
 <script src="/tabler-1.2.0/dashboard/libs/jsvectormap/dist/jsvectormap.min.js" defer></script>
@@ -268,6 +280,19 @@
         const modalJadwal = new tabler.Modal(document.getElementById('modalJadwal'))
         const modalTitle = document.getElementById("modal-title")
         const lapangan = document.getElementById("lapangan_id")
+
+        // 🔥 Modal untuk preview gambar
+        const modalImage = new tabler.Modal(document.getElementById('modalImage'))
+        const modalImageContent = document.getElementById('modalImageContent')
+
+        // Tambahkan event click ke semua gambar lapangan
+        document.querySelectorAll('.court-card img').forEach(img => {
+            img.addEventListener('click', () => {
+                modalImageContent.src = img.src
+                modalImage.show()
+            })
+        })
+
         flatpickr('#kalender', {
             locale: "id",
             dateFormat: "Y-m-d",
@@ -288,16 +313,13 @@
                         tbody.innerHTML = "" // kosongkan dulu
 
                         result.payload.forEach((item, index) => {
-                            // ambil jam_mulai
                             const [h, m, s] = item.jam_mulai.split(":").map(Number)
                             const start = new Date()
                             start.setHours(h, m, s)
 
-                            // hitung jam selesai
                             const end = new Date(start)
                             end.setHours(start.getHours() + item.durasi_jam)
 
-                            // format ke HH.mm
                             const formatTime = (date) => {
                                 const hh = String(date.getHours()).padStart(2, "0")
                                 const mm = String(date.getMinutes()).padStart(2, "0")
@@ -305,8 +327,6 @@
                             }
 
                             const jamDisplay = `${formatTime(start)} - ${formatTime(end)}`
-
-                            // render ke tabel
                             const tr = document.createElement("tr")
                             tr.innerHTML = `
                                 <td>${index + 1}</td>
@@ -323,8 +343,8 @@
                     console.error("Gagal ambil data:", err)
                 }
             }
-
         });
+
         const openModal = () => modalJadwal.show()
         const closeModal = () => modalJadwal.close()
     });
